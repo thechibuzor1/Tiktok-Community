@@ -1,2 +1,3 @@
-first native android app
+first native android app.
+
 kotlin android studio
