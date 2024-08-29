@@ -40,6 +40,7 @@
         android:textSize="14sp"
         tools:text="Logout"
         android:id="@+id/profile_btn"
+        android:textColor="@color/white"
         />
 
 

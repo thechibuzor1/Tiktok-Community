@@ -2,5 +2,6 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="primary">#227CD7</color>
+    <color name="primary">@color/material_dynamic_tertiary40</color>
+    <color name="secondary">@color/material_dynamic_tertiary30</color>
 </resources>

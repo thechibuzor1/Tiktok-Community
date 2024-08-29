@@ -71,7 +71,8 @@
             android:text="Log in"
             android:id="@+id/submit_btn"
             android:layout_margin="12dp"
-            android:padding="12dp"/>
+            android:padding="12dp"
+            android:textColor="@color/white"/>
 
         <ProgressBar
             android:layout_width="match_parent"

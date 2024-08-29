@@ -127,12 +127,19 @@ class Profile : Fragment() {
 
         Firebase.firestore.collection("users")
             .document(profileUserId)
-            .get()
-            .addOnSuccessListener {
-                profileUserModel = it.toObject(UserModel::class.java)!!
-                setUI()
-            }
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Handle error
+                    return@addSnapshotListener
+                }
 
+                if (snapshot != null && snapshot.exists()) {
+                    profileUserModel = snapshot.toObject(UserModel::class.java)!!
+                    setUI()
+                } else {
+                    // Handle case where user document doesn't exist
+                }
+            }
     }
 
     fun setUI() {

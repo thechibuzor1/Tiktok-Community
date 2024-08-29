@@ -21,6 +21,8 @@ class SingleVideoPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySingleVideoPlayerBinding.inflate(layoutInflater)
+        adapter = VideoListAdapter(this)
+        binding.viewPager.adapter = adapter
         enableEdgeToEdge()
         setContentView(binding.root)
 
@@ -29,24 +31,17 @@ class SingleVideoPlayerActivity : AppCompatActivity() {
 
     }
     fun setUpViewPager(){
-        val options = FirestoreRecyclerOptions.Builder<VideoModel>()
-            .setQuery(
-                Firebase.firestore.collection("videos")
-                    .whereEqualTo("videoId", videoId),
-                VideoModel::class.java
-            ).build()
-        adapter = VideoListAdapter(this,options)
-        binding.viewPager.adapter = adapter
-
+        Firebase.firestore.collection("videos")
+            .whereEqualTo("videoId", videoId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val videos = querySnapshot.toObjects(VideoModel::class.java)
+                adapter.addVideos(videos)
+            }
+            .addOnFailureListener { exception ->
+                            // Handle error
+            }
     }
 
-    override fun onStart() {
-        super.onStart()
-        adapter.startListening()
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        adapter.stopListening()
-    }
 }
