@@ -3,6 +3,9 @@
     <style name="Base.Theme.Tiktok" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/primary</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="colorSecondaryContainer">@color/material_dynamic_secondary40</item>
+        <item name="colorOnSurfaceVariant">@color/material_dynamic_secondary50</item>
+        <item name="colorSurfaceContainer">@color/material_dynamic_secondary10</item>
+        <item name="colorOnSecondaryContainer">@color/material_dynamic_secondary90</item>
     </style>
 </resources>

@@ -2,56 +2,47 @@ package com.downbadbuzor.tiktok
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.viewpager2.widget.ViewPager2
+import com.downbadbuzor.tiktok.adapter.FragmentAdapter
+import com.downbadbuzor.tiktok.adapter.HomeTabAdapter
 import com.downbadbuzor.tiktok.databinding.ActivityMainBinding
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    lateinit var adapter : FragmentAdapter
+    lateinit var viewPager2 : ViewPager2
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
-        onLaunch()
 
-        //replaceFragment(Home())
+        viewPager2 = binding.frameLayout
+        viewPager2.isUserInputEnabled = false
+
+
+        adapter = FragmentAdapter(this)
+        viewPager2.adapter = adapter
+        viewPager2.offscreenPageLimit = 2
 
 
         binding.bottomNavBar.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.bottom_menu_home -> {
-                    showFragment("tab1Fragment")
-                    hideFragment("tab2Fragment")
-                    hideFragment("tab3Fragment")
-
-                }
-
-                R.id.bottom_menu_add -> {
-                    showFragment("tab2Fragment")
-                    hideFragment("tab1Fragment")
-                    hideFragment("tab3Fragment")
-
-                    //startActivity(Intent(this, UploadActivity :: class.java))
-                }
-
-                R.id.bottom_menu_profile -> {
-                    showFragment("tab3Fragment")
-                    hideFragment("tab1Fragment")
-                    hideFragment("tab2Fragment")
-
-
-                    //val intent = Intent(this, ProfileActivity :: class.java)
-                    //intent.putExtra("profile_user_id", FirebaseAuth.getInstance().currentUser?.uid)
-                    //startActivity(intent)
-                }
-
+                R.id.bottom_menu_home -> viewPager2.currentItem = 0
+                R.id.bottom_menu_add -> viewPager2.currentItem = 1
+                R.id.bottom_menu_profile -> viewPager2.currentItem = 2
             }
             true
         }
@@ -59,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
     }
+
 
 
     private fun addFragment(fragment: Fragment, tag: String) {

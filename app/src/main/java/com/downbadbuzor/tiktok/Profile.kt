@@ -63,6 +63,11 @@ class Profile : Fragment() {
         binding.profilePic.setOnClickListener{
             checkPermissionAndPickPhoto()
         }
+        binding.followingBlock.setOnClickListener{
+            val intent = Intent(requireActivity(), FollowingListActivity::class.java)
+            intent.putExtra("profile_user_id", profileUserId )
+            startActivity(intent)
+        }
 
         getProfileDataFromFirebase()
         setUpRecyclerView()
@@ -146,10 +151,11 @@ class Profile : Fragment() {
         profileUserModel.apply {
             Glide.with(binding.profilePic)
                 .load(profilePic)
+                .circleCrop()
                 .apply (
                     RequestOptions().placeholder(R.drawable.icon_account_circle)
                 )
-                .circleCrop()
+
                 .into(binding.profilePic)
 
             binding.profileUsername.text = "@"+username
@@ -194,7 +200,7 @@ class Profile : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter.startListening()
+        adapter.stopListening()
     }
 
 

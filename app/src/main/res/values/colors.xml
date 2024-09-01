@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="primary">@color/material_dynamic_tertiary40</color>
-    <color name="secondary">@color/material_dynamic_tertiary30</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="primary">@color/material_dynamic_secondary50</color>
+    <style name="tab_selected">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="tab_unselected">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

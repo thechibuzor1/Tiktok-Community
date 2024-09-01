@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:padding="8dp"
+    android:gravity="center"
+    >
+
+    <ImageView
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:id="@+id/profile_icon"
+        android:src="@drawable/icon_account_circle"
+        android:layout_marginStart="8dp"
+
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_toEndOf="@+id/profile_icon"
+        android:layout_marginStart="8dp"
+        android:id="@+id/block"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="username"
+        android:id="@+id/username_view"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        />
+
+</LinearLayout>
+    
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:id="@+id/follow_unfollow_btn"
+        android:text="Following"
+        android:layout_marginHorizontal="8dp"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/white"
+        />
+</RelativeLayout>

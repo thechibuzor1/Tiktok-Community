@@ -31,7 +31,8 @@ class VideoListAdapter(private val activity: FragmentActivity) :
         notifyDataSetChanged()
     }
 
-    inner class VideoViewHolder(private val binding: VideoItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
+
+      inner class VideoViewHolder(private val binding: VideoItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindVideo(videoModel: VideoModel) {
 
             //bind user data
@@ -51,19 +52,15 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                             .into(binding.profileIcon)
 
                         binding.userDetailsLayout.setOnClickListener {
-                            if (FirebaseAuth.getInstance().currentUser?.uid != id) {
                                 val intent = Intent(
                                     binding.userDetailsLayout.context,
                                     ProfileActivity::class.java
                                 )
                                 intent.putExtra("profile_user_id", id)
                                 binding.userDetailsLayout.context.startActivity(intent)
-                            }
+
                         }
                     }
-                }
-                .addOnFailureListener {
-                    binding.profileIcon.setImageResource(R.drawable.profile_white)
                 }
 
             binding.captionView.text = videoModel.title
@@ -92,10 +89,13 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                 }
             }
         }
+
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         val binding = VideoItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
         return VideoViewHolder(binding)
     }
 

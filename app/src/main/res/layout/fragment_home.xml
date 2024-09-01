@@ -1,33 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Home"
-    android:orientation="vertical">
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/home_tab"
-        android:background="@android:color/transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorGravity="stretch"
-        app:tabIndicatorAnimationMode="elastic"
-        app:tabSelectedTextColor="@color/white"
-        app:tabIndicatorColor="@null"
-        app:tabIndicatorFullWidth="true"
-        app:tabIndicator="@drawable/tab_indicator"
-        android:layout_marginHorizontal="20dp"
-        android:paddingVertical="10dp"
-        app:tabMode="fixed" />
+    android:orientation="vertical"
+    >
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/home_view_pager"
-        android:layout_below="@id/home_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-/>
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_marginTop="24dp"
+        android:id="@+id/home_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:paddingVertical="10dp"
+        app:tabGravity="center"
+        app:tabIndicator="@null"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorColor="@null"
+        app:tabIndicatorFullWidth="true"
+        app:tabIndicatorGravity="stretch"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@style/tab_unselected"
+        app:tabSelectedTextAppearance="@style/tab_selected"
+        app:tabSelectedTextColor="@color/material_dynamic_secondary80"
+        app:tabTextColor="@color/material_dynamic_tertiary40"
+        />
+
+</FrameLayout>
 
 
-</RelativeLayout>

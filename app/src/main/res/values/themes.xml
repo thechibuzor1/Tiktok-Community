@@ -3,8 +3,11 @@
     <style name="Base.Theme.Tiktok" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">@color/primary</item>
+        <item name="colorSurfaceContainer">@color/material_dynamic_secondary100</item>
+        <item name="colorSecondaryContainer">@color/material_dynamic_secondary90</item>
     </style>
 
     <style name="Theme.Tiktok" parent="Base.Theme.Tiktok" />
+
 
 </resources>

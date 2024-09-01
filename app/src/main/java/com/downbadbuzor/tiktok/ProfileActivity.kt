@@ -36,32 +36,39 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.profile_main)) { v, insets ->
+        profileUserId = intent.getStringExtra("profile_user_id")!!
+        currentUserId = FirebaseAuth.getInstance().currentUser?.uid !!
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        profileUserId = intent.getStringExtra("profile_user_id")!!
 
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid !!
+            //CUrrent user profile
+            binding.profileBtnAct.setOnClickListener {
+                if(profileUserId == currentUserId) {
+                    logout()
+                }else {
+                    followUnfollow()
+                }
+            }
 
-        if(profileUserId == currentUserId){
-            //current user
-            binding.profileBtn.text = "Log out"
-            binding.profileBtn.setOnClickListener{
-                logout()
-            }
-        }else{
-            binding.profileBtn.text = "Follow"
-            binding.profileBtn.setOnClickListener{
-                followUnfollow()
-            }
+
+
+
+        binding.followingBlock.setOnClickListener{
+            val intent = Intent(this, FollowingListActivity::class.java)
+            intent.putExtra("profile_user_id", profileUserId )
+            startActivity(intent)
         }
+
+
         getProfileDataFromFirebase()
         setUpRecyclerView()
-
     }
+
+
 
     fun followUnfollow(){
         Firebase.firestore.collection("users")
@@ -74,12 +81,12 @@ class ProfileActivity : AppCompatActivity() {
                     //unfollow
                     profileUserModel.followerList.remove(currentUserId)
                     currentUserModel.followingList.remove(profileUserId)
-                    binding.profileBtn.text = "Follow"
+                    binding.profileBtnAct.text = "Follow"
                 }else{
                     //follow
                     profileUserModel.followerList.add(currentUserId)
                     currentUserModel.followingList.add(profileUserId)
-                    binding.profileBtn.text = "Unfollow"
+                    binding.profileBtnAct.text = "Unfollow"
                 }
                 updateUserData(profileUserModel)
                 updateUserData(currentUserModel)
@@ -113,6 +120,7 @@ class ProfileActivity : AppCompatActivity() {
         profileUserModel.apply {
             Glide.with(binding.profilePic)
                 .load(profilePic)
+                .circleCrop()
                 .apply (
                     RequestOptions().placeholder(R.drawable.icon_account_circle)
                 )
@@ -120,9 +128,14 @@ class ProfileActivity : AppCompatActivity() {
 
             binding.profileUsername.text = "@"+username
             if (profileUserModel.followerList.contains(currentUserId)){
-                binding.profileBtn.text = "Unfollow"
+                binding.profileBtnAct.text = "Unfollow"
             }else{
-                binding.profileBtn.text = "Follow"
+                if(profileUserId == currentUserId){
+                    //CUrrent user profile
+                    binding.profileBtnAct.text = "Logout"
+                }else{
+                    binding.profileBtnAct.text = "Follow"
+                }
             }
             binding.progressBar.visibility = View.GONE
             binding.followerCount.text = followerList.size.toString()
@@ -165,7 +178,7 @@ class ProfileActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        adapter.startListening()
+        adapter.stopListening()
     }
 
 
