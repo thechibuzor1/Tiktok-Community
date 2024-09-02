@@ -16,6 +16,9 @@ import com.downbadbuzor.tiktok.model.VideoModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class VideoListAdapter(private val activity: FragmentActivity) :
     RecyclerView.Adapter<VideoListAdapter.VideoViewHolder>() {
@@ -31,6 +34,11 @@ class VideoListAdapter(private val activity: FragmentActivity) :
         notifyDataSetChanged()
     }
 
+    fun formatDate(date: Date): String {
+        val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+        return dateFormat.format(date)
+    }
+
 
       inner class VideoViewHolder(private val binding: VideoItemRowBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bindVideo(videoModel: VideoModel) {
@@ -43,6 +51,7 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                     val userModel = it?.toObject(UserModel::class.java)
                     userModel?.apply {
                         binding.usernameView.text = username
+                        binding.timestampText.text = "•${formatDate(videoModel.createdTime.toDate())}"
                         //bind profile
                         Glide.with(binding.profileIcon).load(profilePic)
                             .circleCrop()
@@ -66,6 +75,9 @@ class VideoListAdapter(private val activity: FragmentActivity) :
             binding.captionView.text = videoModel.title
             binding.progressBar.visibility = View.VISIBLE
 
+
+            binding.videoView.isFocusable = false
+            binding.videoView.isFocusableInTouchMode = false
             //bind video to the view
             binding.videoView.apply {
                 setVideoPath(videoModel.url)
@@ -88,8 +100,8 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                     }
                 }
             }
-        }
 
+        }
     }
 
 

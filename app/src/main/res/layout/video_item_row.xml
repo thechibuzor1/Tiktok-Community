@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:id="@+id/video_view"/>
+        android:id="@+id/video_view"
+        />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -52,17 +53,35 @@
             android:orientation="vertical"
 
             >
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="4dp"
+                >
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="username"
                 android:textColor="@color/white"
                 android:id="@+id/username_view"
                 android:textSize="20sp"
+                android:layout_gravity="center"
                 android:textStyle="bold"
-                android:layout_marginBottom="4dp"
-
                 />
+                <TextView
+                    android:id="@+id/timestamp_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="timestamp"
+                    android:textColor="@color/material_dynamic_tertiary70"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    android:layout_marginStart="8dp"
+                    android:layout_gravity="center"
+                    />
+
+            </LinearLayout>
 
             <TextView
             android:layout_width="match_parent"

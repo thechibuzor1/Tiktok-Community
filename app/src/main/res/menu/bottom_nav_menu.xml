@@ -6,6 +6,9 @@
     <item android:title="Upload"
         android:icon="@drawable/icon_add"
         android:id="@+id/bottom_menu_add"/>
+    <item android:title="Community"
+        android:icon="@drawable/community_selector"
+        android:id="@+id/bottom_menu_community"/>
     <item android:title="Profile"
         android:icon="@drawable/account_selector"
         android:id="@+id/bottom_menu_profile"/>
