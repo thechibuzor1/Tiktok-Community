@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
 import com.downbadbuzor.tiktok.adapter.VideoListAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
+import com.downbadbuzor.tiktok.model.UserModel
 import com.downbadbuzor.tiktok.utils.UiUtils
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
@@ -39,6 +42,9 @@ class Community : Fragment() {
     lateinit var adapter: CommunityPostAdapter
     lateinit var binding : FragmentCommunityBinding
 
+    lateinit var profileUserId : String
+    lateinit var profileUserModel : UserModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -59,43 +65,27 @@ class Community : Fragment() {
             insets
         }
 
+
+        val bottomSheetFragment = BottomSheetFragment()
+        binding.postIcon.setOnClickListener {
+            bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
+        }
+
         adapter = CommunityPostAdapter()
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
+
+        getProfileDataFromFirebase()
         retrievePosts()
+
+
         // Inflate the layout for this fragment
-        binding.postButton.setOnClickListener {
-            post()
-        }
+        //binding.postButton.setOnClickListener { post() }
         return binding.root
     }
 
 
-    private fun post() {
-        if (binding.postInput.text.toString().isEmpty()) {
-            binding.postInput.error = "Write something"
-            return
-        }
-        setInProgress(true)
-        val postModel = CommuinityModel(
-            FirebaseAuth.getInstance().currentUser?.uid!! + "_" + Timestamp.now().toString(),
-            binding.postInput.text.trim().toString(),
-            FirebaseAuth.getInstance().currentUser?.uid!!,
-            Timestamp.now()
-        )
-        Firebase.firestore.collection("community")
-            .document(postModel.postId)
-            .set(postModel)
-            .addOnSuccessListener {
-                setInProgress(false)
-                UiUtils.showToast(requireContext(), "Post uploaded")
-                binding.postInput.text.clear()
-            }
-            .addOnFailureListener {
-                setInProgress(false)
-                UiUtils.showToast(requireContext(), "Post failed to upload")
-            }
-    }
+
 
     private fun retrievePosts(){
         Firebase.firestore.collection("community")
@@ -113,18 +103,42 @@ class Community : Fragment() {
             }
     }
 
+    fun getProfileDataFromFirebase() {
+
+        profileUserId = FirebaseAuth.getInstance().currentUser?.uid !!
 
 
-    private fun setInProgress(inProgress : Boolean){
-        if(inProgress){
-            binding.progressBar.visibility = View.VISIBLE
-            binding.postButton.visibility = View.GONE
-        }
-        else {
-            binding.progressBar.visibility = View.GONE
-            binding.postButton.visibility = View.VISIBLE
+        Firebase.firestore.collection("users")
+            .document(profileUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Handle error
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    profileUserModel = snapshot.toObject(UserModel::class.java)!!
+                    setUI()
+                } else {
+                    // Handle case where user document doesn't exist
+                }
+            }
+    }
+
+    fun setUI() {
+        profileUserModel.apply {
+            Glide.with(binding.profilePic)
+                .load(profilePic)
+                .circleCrop()
+                .apply(
+                    RequestOptions().placeholder(R.drawable.icon_account_circle)
+                )
+                .into(binding.profilePic)
+
         }
     }
+
+
 
     companion object {
         /**

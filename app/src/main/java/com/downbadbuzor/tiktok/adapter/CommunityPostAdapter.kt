@@ -1,10 +1,12 @@
 package com.downbadbuzor.tiktok.adapter
 
+import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.downbadbuzor.tiktok.R
 import com.downbadbuzor.tiktok.databinding.PostItemBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
@@ -18,6 +20,7 @@ import java.util.Locale
 
 class CommunityPostAdapter():
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>(){
+
     private val posts = mutableListOf<CommuinityModel>()
 
     fun addPost(newVideos: List<CommuinityModel>) {
@@ -31,7 +34,7 @@ class CommunityPostAdapter():
 
 
     fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
         return dateFormat.format(date)
     }
 
@@ -47,7 +50,6 @@ class CommunityPostAdapter():
                         val userModel = it?.toObject(UserModel::class.java)
                         userModel?.apply {
                             binding.username.text = username
-                            binding.timestampText.text = "• ${formatDate(postModel.createdTime.toDate())}"
                             //bind profile
                             Glide.with(binding.profileIcon).load(profilePic)
                                 .circleCrop()
@@ -58,8 +60,14 @@ class CommunityPostAdapter():
                         }
 
                     }
+                binding.postTitle.text = postModel.title
+                Glide.with(binding.postImage)
+                    .load(postModel.picture)
+                    .override(1000, 600)
+                    .into(binding.postImage)
+                binding.timestampText.text = "• ${formatDate(postModel.createdTime.toDate())}"
+                binding.postContent.text =postModel.content
 
-                binding.postContent.text = postModel.content
             }
     }
 

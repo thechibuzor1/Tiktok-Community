@@ -3,7 +3,7 @@
     <item android:title="Home"
         android:icon="@drawable/home_selector"
         android:id="@+id/bottom_menu_home"/>
-    <item android:title="Upload"
+    <item android:title="Post"
         android:icon="@drawable/icon_add"
         android:id="@+id/bottom_menu_add"/>
     <item android:title="Community"

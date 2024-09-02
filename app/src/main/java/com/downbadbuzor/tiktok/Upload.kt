@@ -63,7 +63,9 @@ class Upload : Fragment() {
             postVideo()
         }
         binding.cancelPostBtn.setOnClickListener{
-
+            selectedVideoUri = null
+            binding.postView.visibility = View.GONE
+            binding.uploadView.visibility = View.VISIBLE
         }
          return binding.root
     }

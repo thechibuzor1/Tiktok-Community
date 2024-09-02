@@ -35,7 +35,7 @@ class VideoListAdapter(private val activity: FragmentActivity) :
     }
 
     fun formatDate(date: Date): String {
-        val dateFormat = SimpleDateFormat("dd MMM HH:mm", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
         return dateFormat.format(date)
     }
 

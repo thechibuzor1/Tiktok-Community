@@ -6,69 +6,75 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Community"
     android:orientation="vertical"
-    android:background="@color/material_dynamic_secondary20">
+    >
 
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="@color/white"
-    android:text="Community"
-    android:textSize="32sp"
-    android:textStyle="bold"
-    android:id="@+id/title"
-    android:layout_marginStart="24dp"
-    android:layout_marginBottom="16dp"
-    />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/header"
+        android:paddingHorizontal="16dp"
+
+        >
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:id="@+id/profile_pic"
+            android:src="@drawable/icon_account_circle"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+
+            />
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:textColor="@color/white"
+        android:layout_centerInParent="true"
+         android:src="@drawable/logo"
+        android:layout_marginBottom="32dp"
+        />
+
+</RelativeLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/header"
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/post_view"
+
         />
 
-    <RelativeLayout
-        android:id="@+id/post_view"
-        android:layout_width="match_parent"
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:paddingHorizontal="24dp"
-        android:paddingVertical="16dp"
-        android:background="@color/material_dynamic_secondary30"
+        android:layout_alignParentEnd="true"
+        app:cardCornerRadius="20dp"
+        android:id="@+id/post_icon"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:strokeWidth="0dp"
+        >
+    <RelativeLayout
+        android:background="?attr/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="20dp"
         >
 
-        <EditText
-            android:id="@+id/post_input"
-            android:layout_toStartOf="@+id/post_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Write something..."
-            android:textColorHint="@color/material_dynamic_tertiary70"
-            android:layout_marginEnd="8dp"
-            android:textColor="@color/white"
-            />
-        <ProgressBar
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="80dp"
-            android:visibility="gone"
-            android:id="@+id/progress_bar"
-            />
-
-        <Button
-            android:id="@+id/post_button"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:visibility="visible"
-            android:text="Post"
-            android:layout_alignParentEnd="true"
-            android:textColor="@color/white"
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/outline_pen"
             />
 
     </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 
 </RelativeLayout>
