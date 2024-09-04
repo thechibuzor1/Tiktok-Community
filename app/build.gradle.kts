@@ -56,6 +56,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     //glide
     implementation (libs.glide)
+    //swipe refresh
+    implementation (libs.androidx.swiperefreshlayout)
 
     //firebase ui
     implementation (libs.firebase.ui.firestore)

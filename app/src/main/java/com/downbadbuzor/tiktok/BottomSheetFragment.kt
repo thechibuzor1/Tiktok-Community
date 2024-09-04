@@ -60,14 +60,11 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         fun post() {
-            if(binding.postCaptionInput.text.toString().isEmpty()){
-                binding.postCaptionInput.error = "Write a caption"
+            if(binding.postCaptionInput.text.toString().isEmpty() && selectedPhotoUri == null){
+                binding.postCaptionInput.error = "You can't post nothing..."
                 return
             }
-            if(binding.postTitleInput.text.toString().isEmpty()){
-                binding.postTitleInput.error = "Write a title"
-                return
-            }
+
             setInProgress(true)
             uploadToFireStore(selectedPhotoUri)
         }
@@ -82,7 +79,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
         binding.cancelPostBtn.setOnClickListener {
             // Handle cancel button click
-            binding.postTitleInput.text?.clear()
             binding.postCaptionInput.text?.clear()
             binding.postThumbnailView.setImageResource(R.drawable.image_place_holder)
             selectedPhotoUri = null
@@ -121,7 +117,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     fun postToFireStore(url : String){
         val postModel = CommuinityModel(
             currentUser + "_" + Timestamp.now().toString(),
-            binding.postTitleInput.text.toString(),
             url,
             binding.postCaptionInput.text.toString(),
             currentUser,
@@ -132,7 +127,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             .set(postModel)
             .addOnSuccessListener {
                 setInProgress(false)
-                binding.postTitleInput.text?.clear()
                 binding.postCaptionInput.text?.clear()
                 binding.postThumbnailView.setImageResource(R.drawable.image_place_holder)
                 selectedPhotoUri = null

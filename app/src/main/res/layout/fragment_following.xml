@@ -20,7 +20,7 @@
         android:gravity="center"
         android:id="@+id/empty_state_text_view"
         android:visibility="gone"
-        android:background="@color/material_dynamic_secondary20"
+        android:background="?android:attr/windowBackground"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +29,6 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_marginHorizontal="20dp"
             />
         <TextView
@@ -38,7 +37,6 @@
             android:text="Follow more people to see their videos here."
             android:gravity="center"
             android:textSize="14sp"
-            android:textColor="@color/white"
             android:layout_margin="20dp"
             />
     </LinearLayout>

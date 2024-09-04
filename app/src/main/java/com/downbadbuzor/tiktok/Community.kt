@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
+import com.downbadbuzor.tiktok.adapter.CommunityTabAdapter
 import com.downbadbuzor.tiktok.adapter.VideoListAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
 import com.downbadbuzor.tiktok.utils.UiUtils
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.firebase.Firebase
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -39,11 +43,14 @@ class Community : Fragment() {
 
 
 
-    lateinit var adapter: CommunityPostAdapter
     lateinit var binding : FragmentCommunityBinding
+    lateinit var tabLayout : TabLayout
+    lateinit var viewPager : ViewPager2
+    lateinit var tabAdapter : CommunityTabAdapter
 
     lateinit var profileUserId : String
     lateinit var profileUserModel : UserModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,12 +78,36 @@ class Community : Fragment() {
             bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
         }
 
-        adapter = CommunityPostAdapter()
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
-
         getProfileDataFromFirebase()
-        retrievePosts()
+
+        tabLayout = binding.communityTab
+        viewPager = binding.communityViewPager
+        tabAdapter = CommunityTabAdapter(childFragmentManager, lifecycle)
+        tabLayout.addTab(tabLayout.newTab().setText("For You"))
+        tabLayout.addTab(tabLayout.newTab().setText("Following"))
+
+        viewPager.adapter = tabAdapter
+
+        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                viewPager.currentItem = tab!!.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+
+        })
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                tabLayout.selectTab(tabLayout.getTabAt(position))
+            }
+        })
+
+
 
 
         // Inflate the layout for this fragment
@@ -85,23 +116,6 @@ class Community : Fragment() {
     }
 
 
-
-
-    private fun retrievePosts(){
-        Firebase.firestore.collection("community")
-            .orderBy("createdTime", Query.Direction.ASCENDING)
-            .addSnapshotListener { querySnapshot, error ->
-                if (error != null) {
-                    // Handle error
-                    return@addSnapshotListener
-                }
-                if (querySnapshot != null) {
-                    val posts = querySnapshot.toObjects(CommuinityModel::class.java)
-                    adapter.clearPosts()
-                    adapter.addPost(posts)
-                }
-            }
-    }
 
     fun getProfileDataFromFirebase() {
 

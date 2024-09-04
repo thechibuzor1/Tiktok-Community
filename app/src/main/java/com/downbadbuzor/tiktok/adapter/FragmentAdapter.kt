@@ -12,13 +12,12 @@ import com.downbadbuzor.tiktok.Upload
 
 class FragmentAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = 3
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> Home()
-            1 -> Upload()
-            2  -> Community()
-            3 -> Profile()
+            0 -> Community()
+            1 -> Home()
+            2  -> Profile()
             else -> throw IllegalStateException("Invalid tab position")
         }
     }

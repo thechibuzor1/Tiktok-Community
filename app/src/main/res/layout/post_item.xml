@@ -51,8 +51,6 @@
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:textColor="@color/material_dynamic_tertiary50"
-                android:layout_toEndOf="@+id/username"
-                android:layout_centerInParent="true"
                 />
         </LinearLayout>
 
@@ -69,26 +67,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
-            android:id="@+id/post_title"
-            android:textStyle="bold"
-
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:visibility="gone"
             android:id="@+id/post_content"
+            android:layout_marginTop="2dp"
             />
 
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:layout_marginTop="8dp"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:id="@+id/post_image"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
+                android:scaleType="centerCrop"
                 app:shapeAppearanceOverlay="@style/RoundedCorners"
                 />
 

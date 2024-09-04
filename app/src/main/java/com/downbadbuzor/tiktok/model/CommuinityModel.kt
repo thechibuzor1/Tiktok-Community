@@ -4,7 +4,6 @@ import com.google.firebase.Timestamp
 
 data class CommuinityModel(
     var  postId : String = "",
-    var title : String = "",
     var picture : String? = "",
     var  content : String = "",
     var  uploaderId : String = "",

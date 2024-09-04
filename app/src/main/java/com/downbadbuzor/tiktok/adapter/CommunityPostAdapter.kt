@@ -2,6 +2,7 @@ package com.downbadbuzor.tiktok.adapter
 
 import android.app.Activity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -60,11 +61,13 @@ class CommunityPostAdapter():
                         }
 
                     }
-                binding.postTitle.text = postModel.title
+
                 Glide.with(binding.postImage)
                     .load(postModel.picture)
                     .override(1000, 600)
                     .into(binding.postImage)
+                if (postModel.content != "") {binding.postContent.visibility = View.VISIBLE}
+                if (postModel.picture != "") {binding.postImage.visibility = View.VISIBLE}
                 binding.timestampText.text = "• ${formatDate(postModel.createdTime.toDate())}"
                 binding.postContent.text =postModel.content
 

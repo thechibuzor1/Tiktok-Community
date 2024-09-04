@@ -30,19 +30,28 @@
         android:textColor="@color/white"
         android:layout_centerInParent="true"
          android:src="@drawable/logo"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         />
 
 </RelativeLayout>
 
 
 
-    <androidx.recyclerview.widget.RecyclerView
+    <com.google.android.material.tabs.TabLayout
         android:layout_below="@+id/header"
-        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorGravity="bottom"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabMode="fixed"
+        android:id="@+id/community_tab"
+        />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/community_view_pager"
+        android:layout_below="@id/community_tab"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         />
 
 

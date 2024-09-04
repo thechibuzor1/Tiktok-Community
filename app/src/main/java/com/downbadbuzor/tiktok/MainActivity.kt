@@ -40,9 +40,8 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavBar.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottom_menu_home -> viewPager2.setCurrentItem(0, false)
-                R.id.bottom_menu_add -> viewPager2.setCurrentItem(1, false)
-                R.id.bottom_menu_community -> viewPager2.setCurrentItem(2, false)
-                R.id.bottom_menu_profile -> viewPager2.setCurrentItem(3, false)
+                R.id.bottom_menu_tiktok -> viewPager2.setCurrentItem(1, false)
+                R.id.bottom_menu_search -> viewPager2.setCurrentItem(2, false)
             }
             true
         }

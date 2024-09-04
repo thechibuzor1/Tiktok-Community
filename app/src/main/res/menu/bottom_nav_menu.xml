@@ -3,13 +3,10 @@
     <item android:title="Home"
         android:icon="@drawable/home_selector"
         android:id="@+id/bottom_menu_home"/>
-    <item android:title="Post"
-        android:icon="@drawable/icon_add"
-        android:id="@+id/bottom_menu_add"/>
-    <item android:title="Community"
-        android:icon="@drawable/community_selector"
-        android:id="@+id/bottom_menu_community"/>
-    <item android:title="Profile"
-        android:icon="@drawable/account_selector"
-        android:id="@+id/bottom_menu_profile"/>
+    <item android:title="Tiktok"
+        android:icon="@drawable/logo"
+        android:id="@+id/bottom_menu_tiktok"/>
+    <item android:title="Search"
+        android:icon="@drawable/search"
+        android:id="@+id/bottom_menu_search"/>
 </menu>

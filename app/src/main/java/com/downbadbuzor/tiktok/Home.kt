@@ -37,8 +37,9 @@ class Home : Fragment() {
         tabLayout = binding.homeTab
         viewPager = binding.homeViewPager
         tabAdapter = HomeTabAdapter(childFragmentManager, lifecycle)
-        tabLayout.addTab(tabLayout.newTab().setText("Following"))
         tabLayout.addTab(tabLayout.newTab().setText("For You"))
+        tabLayout.addTab(tabLayout.newTab().setText("Following"))
+        tabLayout.addTab(tabLayout.newTab().setText("Post"))
 
         viewPager.adapter = tabAdapter
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener{
@@ -65,16 +66,5 @@ class Home : Fragment() {
         return binding.root
 
     }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-    }
-
 
 }

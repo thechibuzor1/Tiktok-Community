@@ -5,6 +5,7 @@
     <color name="primary">@color/material_dynamic_secondary50</color>
     <style name="tab_selected">
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">22sp</item>
     </style>
     <style name="tab_unselected">
         <item name="android:textStyle">normal</item>
@@ -13,5 +14,10 @@
     <style name="RoundedCorners">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+    </style>
+    <style name="RoundedBottomSheet" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
     </style>
 </resources>
