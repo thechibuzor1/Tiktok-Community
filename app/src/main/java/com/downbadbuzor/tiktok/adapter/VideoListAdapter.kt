@@ -60,7 +60,7 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                             )
                             .into(binding.profileIcon)
 
-                        binding.userDetailsLayout.setOnClickListener {
+                         binding.userDetailsLayout.setOnClickListener {
                                 val intent = Intent(
                                     binding.userDetailsLayout.context,
                                     ProfileActivity::class.java

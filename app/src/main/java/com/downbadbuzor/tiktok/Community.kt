@@ -1,5 +1,6 @@
 package com.downbadbuzor.tiktok
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -65,7 +66,7 @@ class Community : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityBinding.inflate(layoutInflater, container, false)
-
+        profileUserId = FirebaseAuth.getInstance().currentUser?.uid !!
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
@@ -108,6 +109,14 @@ class Community : Fragment() {
         })
 
 
+        binding.profilePic.setOnClickListener {
+            val intent = Intent(
+                binding.profilePic.context,
+                ProfileActivity::class.java
+            )
+            intent.putExtra("profile_user_id", profileUserId)
+            binding.profilePic.context.startActivity(intent)
+        }
 
 
         // Inflate the layout for this fragment
@@ -118,9 +127,6 @@ class Community : Fragment() {
 
 
     fun getProfileDataFromFirebase() {
-
-        profileUserId = FirebaseAuth.getInstance().currentUser?.uid !!
-
 
         Firebase.firestore.collection("users")
             .document(profileUserId)

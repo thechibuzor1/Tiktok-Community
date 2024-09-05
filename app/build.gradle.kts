@@ -59,6 +59,10 @@ dependencies {
     //swipe refresh
     implementation (libs.androidx.swiperefreshlayout)
 
+    //loupe
+    implementation (libs.loupe)
+    // optional
+
     //firebase ui
     implementation (libs.firebase.ui.firestore)
     implementation (libs.firebase.ui.storage)

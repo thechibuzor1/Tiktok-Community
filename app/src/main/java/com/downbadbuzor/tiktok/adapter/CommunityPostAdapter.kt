@@ -1,6 +1,7 @@
 package com.downbadbuzor.tiktok.adapter
 
 import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.downbadbuzor.tiktok.FollowingListActivity
+import com.downbadbuzor.tiktok.FullScreenImage
+import com.downbadbuzor.tiktok.ProfileActivity
 import com.downbadbuzor.tiktok.R
 import com.downbadbuzor.tiktok.databinding.PostItemBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
@@ -19,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CommunityPostAdapter():
+class CommunityPostAdapter(private val activity: Activity):
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>(){
 
     private val posts = mutableListOf<CommuinityModel>()
@@ -66,11 +70,23 @@ class CommunityPostAdapter():
                     .load(postModel.picture)
                     .override(1000, 600)
                     .into(binding.postImage)
-                if (postModel.content != "") {binding.postContent.visibility = View.VISIBLE}
-                if (postModel.picture != "") {binding.postImage.visibility = View.VISIBLE}
+                if (postModel.content != "") {
+                    binding.postContent.visibility = View.VISIBLE
+                }
+                if (postModel.picture != "") {
+                    binding.postImage.visibility = View.VISIBLE
+                }
                 binding.timestampText.text = "• ${formatDate(postModel.createdTime.toDate())}"
-                binding.postContent.text =postModel.content
+                binding.postContent.text = postModel.content
 
+                binding.postImage.setOnClickListener {
+                    val intent = Intent(
+                        activity,
+                        FullScreenImage::class.java
+                    )
+                    intent.putExtra("image_url", postModel.picture)
+                    activity.startActivity(intent)
+                }
             }
     }
 
