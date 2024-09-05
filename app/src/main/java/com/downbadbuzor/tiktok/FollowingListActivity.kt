@@ -1,6 +1,7 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -48,6 +49,10 @@ class FollowingListActivity : AppCompatActivity() {
         tabLayout.addTab(tabLayout.newTab().setText("Following"))
         tabLayout.addTab(tabLayout.newTab().setText("Followers"))
 
+        setSupportActionBar(binding.myToolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+
         viewPager.adapter = tabAdapter
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -76,9 +81,20 @@ class FollowingListActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener {
                 val user = it.toObject(UserModel::class.java)!!
-                binding.username.text = user.username
+                supportActionBar?.title = user.username
+                supportActionBar?.subtitle = user.email
             }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
 }

@@ -19,5 +19,7 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopRight">8dp</item>
         <item name="cornerSizeTopLeft">8dp</item>
+        <item name="background">?attr/colorTertiaryContainer</item>
+        <item name="backgroundTint">?attr/colorTertiaryContainer</item>
     </style>
 </resources>

@@ -62,7 +62,7 @@ class CommunityHome : Fragment() {
 
     private fun retrievePosts(){
         Firebase.firestore.collection("community")
-            .orderBy("createdTime", Query.Direction.ASCENDING)
+            .orderBy("createdTime", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, error ->
                 if (error != null) {
                     // Handle error

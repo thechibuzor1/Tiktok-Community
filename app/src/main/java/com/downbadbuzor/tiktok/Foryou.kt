@@ -10,6 +10,7 @@ import com.google.firebase.Firebase
 import com.downbadbuzor.tiktok.databinding.FragmentForyouBinding
 import com.downbadbuzor.tiktok.model.VideoModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 class Foryou : Fragment() {
@@ -35,6 +36,7 @@ class Foryou : Fragment() {
         val db = Firebase.firestore
 
         db.collection("videos")
+            .orderBy("createdTime", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, error ->
                 if (error != null) {
                     // Handle error

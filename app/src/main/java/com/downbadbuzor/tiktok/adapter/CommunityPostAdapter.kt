@@ -1,7 +1,9 @@
 package com.downbadbuzor.tiktok.adapter
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.downbadbuzor.tiktok.FollowingListActivity
+import com.downbadbuzor.tiktok.FullPost
 import com.downbadbuzor.tiktok.FullScreenImage
 import com.downbadbuzor.tiktok.ProfileActivity
 import com.downbadbuzor.tiktok.R
@@ -45,7 +48,23 @@ class CommunityPostAdapter(private val activity: Activity):
 
     inner class PostViewHolder(private val binding: PostItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+
             fun bindPost(postModel: CommuinityModel) {
+
+                val postDictionary = hashMapOf(
+                    "postId" to postModel.postId,
+                    "picture" to postModel.picture,
+                    "content" to postModel.content,
+                    "uploaderId" to postModel.uploaderId,
+                    "createdTime" to  formatDate(postModel.createdTime.toDate())
+                )
+                val bundle = Bundle()
+                for ((key, value) in postDictionary) {
+                    bundle.putString(key, value.toString()) // Assuming all values can be converted to strings
+                }
+
+
 
                 //bind the user data
                 Firebase.firestore.collection("users")
@@ -62,6 +81,15 @@ class CommunityPostAdapter(private val activity: Activity):
                                     RequestOptions().placeholder(R.drawable.icon_account_circle)
                                 )
                                 .into(binding.profileIcon)
+
+                            binding.profileIcon.setOnClickListener {
+                                val intent = Intent(
+                                    activity,
+                                    ProfileActivity::class.java
+                                )
+                                intent.putExtra("profile_user_id", id)
+                                activity.startActivity(intent)
+                            }
                         }
 
                     }
@@ -85,9 +113,22 @@ class CommunityPostAdapter(private val activity: Activity):
                         FullScreenImage::class.java
                     )
                     intent.putExtra("image_url", postModel.picture)
+                    activity.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(activity).toBundle())
+                }
+                binding.postBody.setOnClickListener {
+                    val intent = Intent(
+                        activity,
+                        FullPost ::class.java
+                    )
+                    intent.putExtras(bundle)
                     activity.startActivity(intent)
                 }
+
+
+
             }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {

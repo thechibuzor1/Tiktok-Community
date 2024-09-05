@@ -1,6 +1,8 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
+import android.transition.Explode
+import android.view.Window
 import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +18,13 @@ class FullScreenImage : AppCompatActivity() {
     lateinit var imageUrl : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        with(window) {
+            requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
+
+            // Set an exit transition
+            enterTransition = Explode()
+            exitTransition = Explode()
+        }
         binding = ActivityFullScreenImageBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -29,6 +38,8 @@ class FullScreenImage : AppCompatActivity() {
 
         val loupe = Loupe.create(imageView = binding.image, container = binding.main) { // imageView is your ImageView
             useFlingToDismissGesture = false
+
+            dismissAnimationDuration = 50L
 
             // duration millis for double tap scale animation
             scaleAnimationDuration = 175L

@@ -52,10 +52,12 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
                 result ->
             if (result.resultCode == RESULT_OK){
                 selectedPhotoUri = result.data?.data
-                Glide.with(binding.postThumbnailView)
-                    .load(selectedPhotoUri)
-                    .into(binding.postThumbnailView)
 
+
+                Glide.with(binding.postImagePreview)
+                    .load(selectedPhotoUri)
+                    .into(binding.postImagePreview)
+                binding.postImagePreview.visibility = View.VISIBLE
             }
         }
 
@@ -70,7 +72,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         // Set up UI elements and click listeners here
-        binding.postThumbnailView.setOnClickListener{
+        binding.postImageBtn.setOnClickListener{
             checkPermissionAndPickPhoto()
         }
         binding.submitPostBtn.setOnClickListener {
@@ -80,7 +82,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         binding.cancelPostBtn.setOnClickListener {
             // Handle cancel button click
             binding.postCaptionInput.text?.clear()
-            binding.postThumbnailView.setImageResource(R.drawable.image_place_holder)
+            binding.postImagePreview.setImageResource(R.drawable.image_place_holder)
+            binding.postImagePreview.visibility = View.GONE
             selectedPhotoUri = null
             dismissAllowingStateLoss()
         }
@@ -128,7 +131,8 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             .addOnSuccessListener {
                 setInProgress(false)
                 binding.postCaptionInput.text?.clear()
-                binding.postThumbnailView.setImageResource(R.drawable.image_place_holder)
+                binding.postImagePreview.setImageResource(R.drawable.image_place_holder)
+                binding.postImagePreview.visibility = View.GONE
                 selectedPhotoUri = null
                 dismissAllowingStateLoss()
             }
