@@ -1,10 +1,10 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityHomeBinding
@@ -29,7 +29,7 @@ class CommunityHome : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    lateinit var binding : FragmentCommunityHomeBinding
+    lateinit var binding: FragmentCommunityHomeBinding
     lateinit var adapter: CommunityPostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,22 +57,17 @@ class CommunityHome : Fragment() {
         }
         // Inflate the layout for this fragment
         retrievePosts()
-        return   binding.root
+        return binding.root
     }
 
-    private fun retrievePosts(){
+    private fun retrievePosts() {
         Firebase.firestore.collection("community")
             .orderBy("createdTime", Query.Direction.DESCENDING)
-            .addSnapshotListener { querySnapshot, error ->
-                if (error != null) {
-                    // Handle error
-                    return@addSnapshotListener
-                }
-                if (querySnapshot != null) {
-                    val posts = querySnapshot.toObjects(CommuinityModel::class.java)
-                    adapter.clearPosts()
-                    adapter.addPost(posts)
-                }
+            .get()
+            .addOnSuccessListener {
+                val posts = it.toObjects(CommuinityModel::class.java)
+                adapter.clearPosts()
+                adapter.addPost(posts)
             }
     }
 

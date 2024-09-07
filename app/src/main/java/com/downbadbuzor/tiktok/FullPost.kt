@@ -5,10 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.ParseException
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
@@ -17,26 +16,23 @@ import com.downbadbuzor.tiktok.databinding.ActivityFullPostBinding
 import com.downbadbuzor.tiktok.model.UserModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.Locale
 
 class FullPost : AppCompatActivity() {
 
-    lateinit var binding : ActivityFullPostBinding
+    lateinit var binding: ActivityFullPostBinding
 
-    lateinit var postId : String
-    lateinit var pictureUrl : String
-    lateinit var content : String
-    lateinit var uploaderId : String
-    lateinit var createdTime : String
+    lateinit var postId: String
+    lateinit var pictureUrl: String
+    lateinit var content: String
+    lateinit var uploaderId: String
+    lateinit var createdTime: String
+
+    private var isLiked = false
+    private var isStarred = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         binding = ActivityFullPostBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -51,7 +47,7 @@ class FullPost : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Post"
 
-
+        val zoomInAnim = AnimationUtils.loadAnimation(this, R.anim.zoom_in)
         val bundle = intent.extras
         val receivedDictionary = hashMapOf<String, Any>()
 
@@ -77,6 +73,28 @@ class FullPost : AppCompatActivity() {
             intent.putExtra("profile_user_id", uploaderId)
             startActivity(intent)
         }
+        binding.heartContainer.setOnClickListener {
+            if (isLiked) {
+                binding.heart.setImageResource(R.drawable.like_outline)
+
+            } else {
+                binding.heart.setImageResource(R.drawable.like_filled_red)
+
+            }
+            binding.heart.startAnimation(zoomInAnim)
+            isLiked = !isLiked
+        }
+        binding.star.setOnClickListener {
+            if (isStarred) {
+                binding.star.setImageResource(R.drawable.star_outline)
+
+            } else {
+                binding.star.setImageResource(R.drawable.gold_star)
+
+            }
+            binding.star.startAnimation(zoomInAnim)
+            isStarred = !isStarred
+        }
 
         setUi()
 
@@ -88,11 +106,12 @@ class FullPost : AppCompatActivity() {
                 finish()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun setUi(){
+    private fun setUi() {
         //bind the user data
         Firebase.firestore.collection("users")
             .document(uploaderId)

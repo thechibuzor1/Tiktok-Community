@@ -11,8 +11,6 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
-import com.downbadbuzor.tiktok.FollowingListActivity
 import com.downbadbuzor.tiktok.FullPost
 import com.downbadbuzor.tiktok.FullScreenImage
 import com.downbadbuzor.tiktok.ProfileActivity
@@ -20,14 +18,13 @@ import com.downbadbuzor.tiktok.R
 import com.downbadbuzor.tiktok.databinding.PostItemBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
-import com.downbadbuzor.tiktok.model.VideoModel
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CommunityPostAdapter(private val activity: Activity):
+class CommunityPostAdapter(private val activity: Activity) :
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>() {
 
     private val posts = mutableListOf<CommuinityModel>()
@@ -127,7 +124,7 @@ class CommunityPostAdapter(private val activity: Activity):
                 )
             }
 
-            binding.heart.setOnClickListener {
+            binding.heartContainer.setOnClickListener {
                 if (isLiked) {
                     binding.heart.setImageResource(R.drawable.like_outline)
 
