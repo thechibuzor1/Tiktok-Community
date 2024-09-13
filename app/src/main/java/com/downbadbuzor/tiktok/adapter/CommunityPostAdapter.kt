@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -127,9 +128,22 @@ class CommunityPostAdapter(private val activity: Activity) :
             binding.heartContainer.setOnClickListener {
                 if (isLiked) {
                     binding.heart.setImageResource(R.drawable.like_outline)
+                    binding.likeText.setTextColor(
+                        ContextCompat.getColor(
+                            binding.likeText.context,
+                            R.color.copyTextColor
+                        )
+                    )
+
 
                 } else {
                     binding.heart.setImageResource(R.drawable.like_filled_red)
+                    binding.likeText.setTextColor(
+                        ContextCompat.getColor(
+                            binding.likeText.context,
+                            R.color.red
+                        )
+                    )
 
                 }
                 binding.heart.startAnimation(zoomInAnim)
