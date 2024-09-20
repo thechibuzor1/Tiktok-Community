@@ -3,12 +3,10 @@ package com.downbadbuzor.tiktok.adapter
 import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -20,12 +18,16 @@ import com.downbadbuzor.tiktok.databinding.PostItemBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class CommunityPostAdapter(private val activity: Activity) :
+class CommunityPostAdapter(
+    private val activity: Activity,
+    private val comment: Boolean
+) :
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>() {
 
     private val posts = mutableListOf<CommuinityModel>()
@@ -54,22 +56,6 @@ class CommunityPostAdapter(private val activity: Activity) :
 
         fun bindPost(postModel: CommuinityModel) {
 
-            val postDictionary = hashMapOf(
-                "postId" to postModel.postId,
-                "picture" to postModel.picture,
-                "content" to postModel.content,
-                "uploaderId" to postModel.uploaderId,
-                "createdTime" to formatDate(postModel.createdTime.toDate())
-            )
-            val bundle = Bundle()
-            for ((key, value) in postDictionary) {
-                bundle.putString(
-                    key,
-                    value.toString()
-                ) // Assuming all values can be converted to strings
-            }
-
-
             //bind the user data
             Firebase.firestore.collection("users")
                 .document(postModel.uploaderId)
@@ -94,6 +80,20 @@ class CommunityPostAdapter(private val activity: Activity) :
                             intent.putExtra("profile_user_id", id)
                             activity.startActivity(intent)
                         }
+
+                        if (postModel.likes.contains(FirebaseAuth.getInstance().currentUser?.uid!!)) {
+                            binding.heart.setImageResource(R.drawable.like_filled_red)
+                            isLiked = true
+                        }
+
+                        binding.likeCount.text = "${postModel.likes.size}"
+                        if (!comment) {
+                            binding.commentCount.text = "${postModel.comments.size}"
+                        } else {
+                            binding.commentContainer.visibility = View.GONE
+                            binding.star.visibility = View.GONE
+                        }
+
                     }
 
                 }
@@ -128,27 +128,42 @@ class CommunityPostAdapter(private val activity: Activity) :
             binding.heartContainer.setOnClickListener {
                 if (isLiked) {
                     binding.heart.setImageResource(R.drawable.like_outline)
-                    binding.likeText.setTextColor(
-                        ContextCompat.getColor(
-                            binding.likeText.context,
-                            R.color.copyTextColor
-                        )
-                    )
+                    postModel.likes.remove(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    binding.likeCount.text = "${postModel.likes.size}"
+
+                    Firebase.firestore.collection("users")
+                        .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                        .get()
+                        .addOnSuccessListener {
+                            val currentUserModel = it.toObject(UserModel::class.java)!!
+                            currentUserModel.liked.remove(postModel.postId)
+                            Firebase.firestore.collection("users")
+                                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                                .set(currentUserModel)
+                        }
 
 
                 } else {
+                    postModel.likes.add(FirebaseAuth.getInstance().currentUser?.uid!!)
                     binding.heart.setImageResource(R.drawable.like_filled_red)
-                    binding.likeText.setTextColor(
-                        ContextCompat.getColor(
-                            binding.likeText.context,
-                            R.color.red
-                        )
-                    )
-
+                    binding.likeCount.text = "${postModel.likes.size}"
+                    Firebase.firestore.collection("users")
+                        .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                        .get()
+                        .addOnSuccessListener {
+                            val currentUserModel = it.toObject(UserModel::class.java)!!
+                            currentUserModel.liked.add(postModel.postId)
+                            Firebase.firestore.collection("users")
+                                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                                .set(currentUserModel)
+                        }
                 }
+
                 binding.heart.startAnimation(zoomInAnim)
                 isLiked = !isLiked
+                updatePostData(postModel)
             }
+
             binding.star.setOnClickListener {
                 if (isStarred) {
                     binding.star.setImageResource(R.drawable.star_outline)
@@ -161,16 +176,34 @@ class CommunityPostAdapter(private val activity: Activity) :
                 isStarred = !isStarred
             }
 
-            binding.postBody.setOnClickListener {
-                val intent = Intent(
-                    activity,
-                    FullPost::class.java
-                )
-                intent.putExtras(bundle)
-                activity.startActivity(intent)
+            if (!comment) {
+                binding.postBody.setOnClickListener {
+                    val intent = Intent(
+                        activity,
+                        FullPost::class.java
+                    )
+                    intent.putExtra("postId", postModel.postId)
+                    activity.startActivity(intent)
+                }
             }
 
 
+        }
+
+        fun updatePostData(model: CommuinityModel) {
+            if (comment) {
+                Firebase.firestore.collection("comments")
+                    .document(model.postId)
+                    .set(model)
+                    .addOnSuccessListener {
+                    }
+            } else {
+                Firebase.firestore.collection("community")
+                    .document(model.postId)
+                    .set(model)
+                    .addOnSuccessListener {
+                    }
+            }
         }
 
 

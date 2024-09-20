@@ -102,15 +102,16 @@
                     android:src="@drawable/like_outline" />
 
                 <TextView
-                    android:id="@+id/like_text"
+                    android:id="@+id/like_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
-                    android:text="10" />
+                    android:text="0" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/comment_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -125,10 +126,11 @@
                     android:src="@drawable/chat_outline" />
 
                 <TextView
+                    android:id="@+id/comment_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
-                    android:text="10" />
+                    android:text="0" />
             </LinearLayout>
 
 

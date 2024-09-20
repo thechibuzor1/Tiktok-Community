@@ -1,11 +1,18 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityFollowingBinding
+import com.downbadbuzor.tiktok.model.CommuinityModel
+import com.downbadbuzor.tiktok.utils.UiUtils
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,7 +29,8 @@ class CommunityFollowing : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
-    lateinit var binding : FragmentCommunityFollowingBinding
+    lateinit var binding: FragmentCommunityFollowingBinding
+    lateinit var adapter: CommunityPostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +45,68 @@ class CommunityFollowing : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityFollowingBinding.inflate(layoutInflater, container, false)
+        adapter = CommunityPostAdapter(requireActivity(), false)
 
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
 
-
+        binding.swipeRefresh.setOnRefreshListener {
+            UiUtils.showToast(requireContext(), "Refreshing")
+            retrievePosts()
+            binding.swipeRefresh.isRefreshing = false
+        }
         // Inflate the layout for this fragment
+        retrievePosts()
         return binding.root
     }
 
 
+    private fun retrievePosts() {
+        val db = Firebase.firestore
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid!!
+        val emptyStateTextView =
+            binding.emptyStateTextView // Assuming you have a TextView for the message
+        val followingViewPager = binding.swipeRefresh
 
+
+        db.collection("users").document(currentUserId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    // Handle error
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val followingList =
+                        snapshot.get("followingList") as? List<String> ?: emptyList()
+                    if (followingList.isEmpty()) {
+                        followingViewPager.visibility = View.GONE
+                        emptyStateTextView.visibility = View.VISIBLE
+                    } else {
+                        followingViewPager.visibility = View.VISIBLE
+                        emptyStateTextView.visibility = View.GONE
+
+                        adapter.clearPosts() // Clear existing posts before adding new ones
+
+                        for (followingId in followingList) {
+                            db.collection("community")
+                                .whereEqualTo("uploaderId", followingId)
+                                .get()
+                                .addOnSuccessListener { querySnapshot ->
+                                    val post = querySnapshot.toObjects(CommuinityModel::class.java)
+                                    adapter.addPost(post)
+                                }
+                                .addOnFailureListener { exception ->
+                                    // Handle error
+                                }
+                        }
+                    }
+                } else {
+                    // Handle case where user document doesn't exist
+                }
+            }
+
+    }
 
 
     companion object {

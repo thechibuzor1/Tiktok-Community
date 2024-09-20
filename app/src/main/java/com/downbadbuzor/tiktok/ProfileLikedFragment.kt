@@ -1,10 +1,18 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
+import com.downbadbuzor.tiktok.databinding.FragmentProfileLikedBinding
+import com.downbadbuzor.tiktok.model.CommuinityModel
+import com.downbadbuzor.tiktok.model.UserModel
+import com.downbadbuzor.tiktok.utils.UiUtils
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,13 +26,16 @@ private const val ARG_PARAM2 = "param2"
  */
 class ProfileLikedFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var currentUserId: String? = null
     private var param2: String? = null
+
+    lateinit var binding: FragmentProfileLikedBinding
+    lateinit var adapter: CommunityPostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            currentUserId = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -32,10 +43,57 @@ class ProfileLikedFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        binding = FragmentProfileLikedBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile_liked, container, false)
+
+        adapter = CommunityPostAdapter(requireActivity(), false)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
+
+        binding.swipeRefresh.setOnRefreshListener {
+            UiUtils.showToast(requireContext(), "Refreshing")
+            retrieveLiked()
+            binding.swipeRefresh.isRefreshing = false
+        }
+        retrieveLiked()
+
+        return binding.root
     }
+
+
+    private fun retrieveLiked() {
+        val likedPosts = mutableListOf<CommuinityModel>()
+
+
+
+        Firebase.firestore.collection("users")
+            .document(currentUserId!!)
+            .get()
+            .addOnSuccessListener {
+                val currentUserModel = it.toObject(UserModel::class.java)!!
+                var completedQueries = 0
+                val totalQueries = currentUserModel.liked.size
+
+                for (i in currentUserModel.liked) {
+                    Firebase.firestore.collection("community")
+                        .document(i)
+                        .get()
+                        .addOnSuccessListener { curr ->
+                            val item = curr?.toObject(CommuinityModel::class.java)
+                            if (item != null) {
+                                likedPosts.add(item)
+                            }
+                            completedQueries++
+                            if (completedQueries == totalQueries) {
+                                adapter.clearPosts()
+                                adapter.addPost(likedPosts)
+                            }
+                        }
+                }
+            }
+    }
+
 
     companion object {
         /**

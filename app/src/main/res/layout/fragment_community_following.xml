@@ -3,37 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CommunityFollowing"
-    >
+    tools:context=".CommunityFollowing">
 
     <LinearLayout
+        android:id="@+id/empty_state_text_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
         android:background="?android:attr/windowBackground"
-        android:id="@+id/empty_state_text_view"
-        >
-        <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You're not following anyone☹️"
         android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_marginHorizontal="20dp"
-        />
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Follow more people to see their posts here."
+            android:layout_marginHorizontal="20dp"
             android:gravity="center"
-            android:textSize="14sp"
-            android:layout_margin="20dp"
-            />
+            android:text="You're not following anyone☹️"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:text="Follow more people to see their posts here."
+            android:textSize="14sp" />
 
 
     </LinearLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </FrameLayout>

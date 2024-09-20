@@ -2,29 +2,22 @@ package com.downbadbuzor.tiktok
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
 import com.downbadbuzor.tiktok.adapter.CommunityTabAdapter
-import com.downbadbuzor.tiktok.adapter.VideoListAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityBinding
-import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
-import com.downbadbuzor.tiktok.utils.UiUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.firebase.Firebase
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -43,14 +36,13 @@ class Community : Fragment() {
     private var param2: String? = null
 
 
+    lateinit var binding: FragmentCommunityBinding
+    lateinit var tabLayout: TabLayout
+    lateinit var viewPager: ViewPager2
+    lateinit var tabAdapter: CommunityTabAdapter
 
-    lateinit var binding : FragmentCommunityBinding
-    lateinit var tabLayout : TabLayout
-    lateinit var viewPager : ViewPager2
-    lateinit var tabAdapter : CommunityTabAdapter
-
-    lateinit var profileUserId : String
-    lateinit var profileUserModel : UserModel
+    lateinit var profileUserId: String
+    lateinit var profileUserModel: UserModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +58,7 @@ class Community : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityBinding.inflate(layoutInflater, container, false)
-        profileUserId = FirebaseAuth.getInstance().currentUser?.uid !!
+        profileUserId = FirebaseAuth.getInstance().currentUser?.uid!!
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
@@ -74,7 +66,7 @@ class Community : Fragment() {
         }
 
 
-        val bottomSheetFragment = BottomSheetFragment()
+        val bottomSheetFragment = BottomSheetFragment("")
         binding.postIcon.setOnClickListener {
             bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
         }
@@ -125,7 +117,6 @@ class Community : Fragment() {
     }
 
 
-
     fun getProfileDataFromFirebase() {
 
         Firebase.firestore.collection("users")
@@ -157,7 +148,6 @@ class Community : Fragment() {
 
         }
     }
-
 
 
     companion object {
