@@ -9,4 +9,5 @@ data class UserModel(
     var followingList: MutableList<String> = mutableListOf(),
     var liked: MutableList<String> = mutableListOf(),
     var starred: MutableList<String> = mutableListOf(),
+    var bio: String = "**No bio yet**"
 )

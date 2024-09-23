@@ -1,30 +1,36 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
+import com.downbadbuzor.tiktok.databinding.FragmentProfileStarredBinding
+import com.downbadbuzor.tiktok.model.CommuinityModel
+import com.downbadbuzor.tiktok.model.UserModel
+import com.downbadbuzor.tiktok.utils.UiUtils
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileStarredFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileStarredFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
+
+    private var currentUserId: String? = null
     private var param2: String? = null
+
+    lateinit var binding: FragmentProfileStarredBinding
+    lateinit var adapter: CommunityPostAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+            currentUserId = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -32,9 +38,63 @@ class ProfileStarredFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        binding = FragmentProfileStarredBinding.inflate(layoutInflater, container, false)
+
+        adapter = CommunityPostAdapter(requireActivity())
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
+
+        binding.swipeRefresh.setOnRefreshListener {
+            UiUtils.showToast(requireContext(), "Refreshing")
+            retrieveStarred()
+            binding.swipeRefresh.isRefreshing = false
+        }
+        if (currentUserId == FirebaseAuth.getInstance().currentUser?.uid!!) {
+            binding.emptyLayout.visibility = View.GONE
+            binding.swipeRefresh.visibility = View.VISIBLE
+            retrieveStarred()
+        } else {
+            binding.emptyLayout.visibility = View.VISIBLE
+            binding.swipeRefresh.visibility = View.GONE
+        }
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile_starred, container, false)
+        return binding.root
+    }
+
+
+    private fun retrieveStarred() {
+        val starredPosts = mutableListOf<CommuinityModel>()
+
+
+
+        Firebase.firestore.collection("users")
+            .document(currentUserId!!)
+            .get()
+            .addOnSuccessListener {
+                val currentUserModel = it.toObject(UserModel::class.java)!!
+                var completedQueries = 0
+                val totalQueries = currentUserModel.starred.size
+
+                for (i in currentUserModel.starred) {
+                    Firebase.firestore.collection("community")
+                        .document(i)
+                        .get()
+                        .addOnSuccessListener { curr ->
+                            val item = curr?.toObject(CommuinityModel::class.java)
+                            if (item != null) {
+                                starredPosts.add(item)
+                            }
+                            completedQueries++
+                            if (completedQueries == totalQueries) {
+                                adapter.clearPosts()
+                                adapter.addPost(starredPosts)
+                            }
+                        }
+                }
+            }
     }
 
     companion object {
@@ -46,7 +106,6 @@ class ProfileStarredFragment : Fragment() {
          * @param param2 Parameter 2.
          * @return A new instance of fragment ProfileStarredFragment.
          */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ProfileStarredFragment().apply {

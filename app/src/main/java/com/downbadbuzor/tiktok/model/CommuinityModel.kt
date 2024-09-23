@@ -10,4 +10,5 @@ data class CommuinityModel(
     var createdTime: Timestamp = Timestamp.now(),
     var likes: MutableList<String> = mutableListOf(),
     var comments: MutableList<String> = mutableListOf(),
+    var type: String = "post"
 )

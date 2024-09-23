@@ -25,8 +25,7 @@ import java.util.Date
 import java.util.Locale
 
 class CommunityPostAdapter(
-    private val activity: Activity,
-    private val comment: Boolean
+    private val activity: Activity
 ) :
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>() {
 
@@ -53,6 +52,7 @@ class CommunityPostAdapter(
 
         private var isLiked = false
         private var isStarred = false
+        private var currentUser = FirebaseAuth.getInstance().currentUser?.uid!!
 
         fun bindPost(postModel: CommuinityModel) {
 
@@ -86,21 +86,35 @@ class CommunityPostAdapter(
                             isLiked = true
                         }
 
+
+
                         binding.likeCount.text = "${postModel.likes.size}"
-                        if (!comment) {
-                            binding.commentCount.text = "${postModel.comments.size}"
-                        } else {
-                            binding.commentContainer.visibility = View.GONE
-                            binding.star.visibility = View.GONE
-                        }
+
+                        binding.commentCount.text = "${postModel.comments.size}"
+
 
                     }
 
                 }
 
+            Firebase.firestore.collection("users")
+                .document(currentUser)
+                .get()
+                .addOnSuccessListener {
+                    val currentUserModel = it?.toObject(UserModel::class.java)
+                    currentUserModel?.apply {
+                        if (currentUserModel.starred.contains(postModel.postId)) {
+                            binding.star.setImageResource(R.drawable.gold_star)
+                            isStarred = true
+                        }
+                    }
+
+                }
+
+
             Glide.with(binding.postImage)
                 .load(postModel.picture)
-                .override(1000, 600)
+                .override(1000, 400)
                 .into(binding.postImage)
             if (postModel.content != "") {
                 binding.postContent.visibility = View.VISIBLE
@@ -128,7 +142,7 @@ class CommunityPostAdapter(
             binding.heartContainer.setOnClickListener {
                 if (isLiked) {
                     binding.heart.setImageResource(R.drawable.like_outline)
-                    postModel.likes.remove(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    postModel.likes.remove(currentUser)
                     binding.likeCount.text = "${postModel.likes.size}"
 
                     Firebase.firestore.collection("users")
@@ -148,7 +162,7 @@ class CommunityPostAdapter(
                     binding.heart.setImageResource(R.drawable.like_filled_red)
                     binding.likeCount.text = "${postModel.likes.size}"
                     Firebase.firestore.collection("users")
-                        .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                        .document(currentUser)
                         .get()
                         .addOnSuccessListener {
                             val currentUserModel = it.toObject(UserModel::class.java)!!
@@ -167,47 +181,59 @@ class CommunityPostAdapter(
             binding.star.setOnClickListener {
                 if (isStarred) {
                     binding.star.setImageResource(R.drawable.star_outline)
+                    Firebase.firestore.collection("users")
+                        .document(currentUser)
+                        .get()
+                        .addOnSuccessListener {
+                            val currentUserModel = it.toObject(UserModel::class.java)!!
+                            currentUserModel.starred.remove(postModel.postId)
+                            Firebase.firestore.collection("users")
+                                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                                .set(currentUserModel)
+                        }
 
                 } else {
                     binding.star.setImageResource(R.drawable.gold_star)
+                    Firebase.firestore.collection("users")
+                        .document(currentUser)
+                        .get()
+                        .addOnSuccessListener {
+                            val currentUserModel = it.toObject(UserModel::class.java)!!
+                            currentUserModel.starred.add(postModel.postId)
+                            Firebase.firestore.collection("users")
+                                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                                .set(currentUserModel)
+                        }
 
                 }
                 binding.star.startAnimation(zoomInAnim)
                 isStarred = !isStarred
             }
 
-            if (!comment) {
-                binding.postBody.setOnClickListener {
-                    val intent = Intent(
-                        activity,
-                        FullPost::class.java
-                    )
-                    intent.putExtra("postId", postModel.postId)
-                    activity.startActivity(intent)
-                }
+
+            binding.postBody.setOnClickListener {
+                val intent = Intent(
+                    activity,
+                    FullPost::class.java
+                )
+                intent.putExtra("postId", postModel.postId)
+                activity.startActivity(intent)
             }
 
 
         }
 
         fun updatePostData(model: CommuinityModel) {
-            if (comment) {
-                Firebase.firestore.collection("comments")
-                    .document(model.postId)
-                    .set(model)
-                    .addOnSuccessListener {
-                    }
-            } else {
-                Firebase.firestore.collection("community")
-                    .document(model.postId)
-                    .set(model)
-                    .addOnSuccessListener {
-                    }
-            }
+            Firebase.firestore.collection("community")
+                .document(model.postId)
+                .set(model)
+                .addOnSuccessListener {
+                }
         }
 
 
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = PostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

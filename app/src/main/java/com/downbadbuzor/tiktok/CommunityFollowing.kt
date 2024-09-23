@@ -45,7 +45,7 @@ class CommunityFollowing : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityFollowingBinding.inflate(layoutInflater, container, false)
-        adapter = CommunityPostAdapter(requireActivity(), false)
+        adapter = CommunityPostAdapter(requireActivity())
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -88,9 +88,11 @@ class CommunityFollowing : Fragment() {
 
                         adapter.clearPosts() // Clear existing posts before adding new ones
 
+
                         for (followingId in followingList) {
                             db.collection("community")
                                 .whereEqualTo("uploaderId", followingId)
+                                .whereEqualTo("type", "post")
                                 .get()
                                 .addOnSuccessListener { querySnapshot ->
                                     val post = querySnapshot.toObjects(CommuinityModel::class.java)

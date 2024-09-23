@@ -71,10 +71,12 @@ class FullPost : AppCompatActivity() {
                 binding.heart.setImageResource(R.drawable.like_outline)
                 postModel.likes.remove(FirebaseAuth.getInstance().currentUser?.uid!!)
                 binding.likeCount.text = "${postModel.likes.size}"
+                updateUserUnLiked()
             } else {
                 postModel.likes.add(FirebaseAuth.getInstance().currentUser?.uid!!)
                 binding.heart.setImageResource(R.drawable.like_filled_red)
                 binding.likeCount.text = "${postModel.likes.size}"
+                updateUserLiked()
             }
 
             binding.heart.startAnimation(zoomInAnim)
@@ -98,7 +100,7 @@ class FullPost : AppCompatActivity() {
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
 
-        adapter = CommunityPostAdapter(this, true)
+        adapter = CommunityPostAdapter(this)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
@@ -131,7 +133,7 @@ class FullPost : AppCompatActivity() {
         val totalQueries = postModel.comments.size
 
         for (i in postModel.comments) {
-            Firebase.firestore.collection("comments")
+            Firebase.firestore.collection("community")
                 .document(i)
                 .get()
                 .addOnSuccessListener {
@@ -223,5 +225,33 @@ class FullPost : AppCompatActivity() {
             .set(model)
             .addOnSuccessListener {
             }
+    }
+
+    fun updateUserUnLiked() {
+        Firebase.firestore.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+            .get()
+            .addOnSuccessListener {
+                val currentUserModel = it.toObject(UserModel::class.java)!!
+                currentUserModel.liked.remove(postModel.postId)
+                Firebase.firestore.collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    .set(currentUserModel)
+            }
+
+    }
+
+    fun updateUserLiked() {
+        Firebase.firestore.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+            .get()
+            .addOnSuccessListener {
+                val currentUserModel = it.toObject(UserModel::class.java)!!
+                currentUserModel.liked.add(postModel.postId)
+                Firebase.firestore.collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    .set(currentUserModel)
+            }
+
     }
 }

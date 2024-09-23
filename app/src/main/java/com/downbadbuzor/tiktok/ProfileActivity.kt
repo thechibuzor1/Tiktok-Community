@@ -122,6 +122,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         })
 
+
         getProfileDataFromFirebase()
 
     }
@@ -197,8 +198,7 @@ class ProfileActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
             binding.followerCount.text = followerList.size.toString()
             binding.followingCount.text = followingList.size.toString()
-
-
+            binding.bioText.text = profileUserModel.bio
         }
     }
 

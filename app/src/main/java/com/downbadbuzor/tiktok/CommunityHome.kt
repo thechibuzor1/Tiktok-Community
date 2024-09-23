@@ -11,7 +11,6 @@ import com.downbadbuzor.tiktok.databinding.FragmentCommunityHomeBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.utils.UiUtils
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -45,7 +44,7 @@ class CommunityHome : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityHomeBinding.inflate(layoutInflater, container, false)
-        adapter = CommunityPostAdapter(requireActivity(), false)
+        adapter = CommunityPostAdapter(requireActivity())
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -62,7 +61,7 @@ class CommunityHome : Fragment() {
 
     private fun retrievePosts() {
         Firebase.firestore.collection("community")
-            .orderBy("createdTime", Query.Direction.DESCENDING)
+            .whereEqualTo("type", "post")
             .get()
             .addOnSuccessListener {
                 val posts = it.toObjects(CommuinityModel::class.java)

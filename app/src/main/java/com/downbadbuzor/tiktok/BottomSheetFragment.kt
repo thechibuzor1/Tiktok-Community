@@ -124,7 +124,8 @@ class BottomSheetFragment(private val postId: String) : BottomSheetDialogFragmen
             currentUser,
             Timestamp.now(),
             mutableListOf(),
-            mutableListOf()
+            mutableListOf(),
+            if (postId == "") "post" else "comment"
         )
 
         if (postId != "") {
@@ -141,46 +142,27 @@ class BottomSheetFragment(private val postId: String) : BottomSheetDialogFragmen
                     updatePostData(post!!)
                 }
 
-
-            //add to comments collection
-            Firebase.firestore.collection("comments")
-                .document(postModel.postId)
-                .set(postModel)
-                .addOnSuccessListener {
-                    setInProgress(false)
-                    binding.postCaptionInput.text?.clear()
-                    binding.postImagePreview.setImageResource(R.drawable.image_place_holder)
-                    binding.postImagePreview.visibility = View.GONE
-                    selectedPhotoUri = null
-                    dismissAllowingStateLoss()
-                }
-                .addOnFailureListener {
-                    setInProgress(false)
-                    UiUtils.showToast(
-                        requireContext(),
-                        it.localizedMessage ?: "Something went wrong"
-                    )
-                }
-        } else {
-            Firebase.firestore.collection("community")
-                .document(postModel.postId)
-                .set(postModel)
-                .addOnSuccessListener {
-                    setInProgress(false)
-                    binding.postCaptionInput.text?.clear()
-                    binding.postImagePreview.setImageResource(R.drawable.image_place_holder)
-                    binding.postImagePreview.visibility = View.GONE
-                    selectedPhotoUri = null
-                    dismissAllowingStateLoss()
-                }
-                .addOnFailureListener {
-                    setInProgress(false)
-                    UiUtils.showToast(
-                        requireContext(),
-                        it.localizedMessage ?: "Something went wrong"
-                    )
-                }
         }
+
+        //add post/comment to collection
+        Firebase.firestore.collection("community")
+            .document(postModel.postId)
+            .set(postModel)
+            .addOnSuccessListener {
+                setInProgress(false)
+                binding.postCaptionInput.text?.clear()
+                binding.postImagePreview.setImageResource(R.drawable.image_place_holder)
+                binding.postImagePreview.visibility = View.GONE
+                selectedPhotoUri = null
+                dismissAllowingStateLoss()
+            }
+            .addOnFailureListener {
+                setInProgress(false)
+                UiUtils.showToast(
+                    requireContext(),
+                    it.localizedMessage ?: "Something went wrong"
+                )
+            }
 
 
     }

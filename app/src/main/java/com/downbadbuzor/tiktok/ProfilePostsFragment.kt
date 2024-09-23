@@ -45,7 +45,7 @@ class ProfilePostsFragment : Fragment() {
     ): View {
         binding = FragmentProfilePostsBinding.inflate(layoutInflater, container, false)
 
-        adapter = CommunityPostAdapter(requireActivity(), false)
+        adapter = CommunityPostAdapter(requireActivity())
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter

@@ -27,152 +27,146 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/icon_account_circle" />
+
+            <ImageView
+                android:id="@+id/edit_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/edit_icon"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/material_dynamic_secondary80"
+            android:indeterminateTintMode="src_atop" />
+
+        <TextView
+            android:id="@+id/profile_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="username" />
+
+        <Button
+            android:id="@+id/profile_btn_act"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            tools:text="Logout" />
+
+
+        <TextView
+            android:id="@+id/bio_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxWidth="200dp"
+            android:text="this is a very cool bio. omg. hi. lorem shit rn fr. lol "
+            android:textStyle="bold" />
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/following_block"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
             android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-
-                <ImageView
-                    android:id="@+id/profile_pic"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/icon_account_circle" />
-
-                <ImageView
-                    android:id="@+id/edit_icon"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/edit_icon"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
-
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/material_dynamic_secondary80"
-                android:indeterminateTintMode="src_atop" />
-
-            <TextView
-                android:id="@+id/profile_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                tools:text="username" />
-
-            <Button
-                android:id="@+id/profile_btn_act"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                tools:text="Logout" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:maxWidth="200dp"
-                android:text="this is a very cool bio. omg. hi. lorem shit rn fr. lol "
-                android:textStyle="bold" />
-
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/following_block"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="10dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
 
-                <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/following_count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/following_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Following"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
+                    android:text="Following"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/follower_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Follower"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/follower_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Follower"
+                    android:textStyle="bold" />
             </LinearLayout>
 
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/profile_tab"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:tabIndicatorAnimationMode="elastic"
-                app:tabIndicatorGravity="bottom"
-                app:tabMode="fixed" />
-
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/profile_view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
         </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/profile_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:tabIndicatorAnimationMode="elastic"
+            app:tabIndicatorGravity="bottom"
+            app:tabMode="fixed" />
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/profile_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+    </LinearLayout>
 
 </LinearLayout>
