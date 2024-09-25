@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-09-04T21:37:46.464771900Z">
+        <DropdownSelection timestamp="2024-09-25T19:38:04.284818100Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\DELL\AppData\Local\avd\Pixel_8_API_34.avd" />
@@ -15,12 +15,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\DELL\AppData\Local\avd\Pixel_8_API_34.avd" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=097825432N101650" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=097825432N101650" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\DELL\AppData\Local\avd\Pixel_8_API_34.avd" />
               </handle>
             </Target>
           </targets>

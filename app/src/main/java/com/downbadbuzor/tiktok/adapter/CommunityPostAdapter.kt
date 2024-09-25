@@ -72,6 +72,16 @@ class CommunityPostAdapter(
                             )
                             .into(binding.profileIcon)
 
+
+                        binding.username.setOnClickListener {
+                            val intent = Intent(
+                                activity,
+                                ProfileActivity::class.java
+                            )
+                            intent.putExtra("profile_user_id", id)
+                            activity.startActivity(intent)
+                        }
+
                         binding.profileIcon.setOnClickListener {
                             val intent = Intent(
                                 activity,
@@ -230,7 +240,6 @@ class CommunityPostAdapter(
                 .addOnSuccessListener {
                 }
         }
-
 
     }
 

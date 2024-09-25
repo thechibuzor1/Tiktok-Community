@@ -3,6 +3,7 @@ package com.downbadbuzor.tiktok
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.view.ContextMenu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -35,9 +36,11 @@ class FullPost : AppCompatActivity() {
     private var isLiked = false
     private var isStarred = false
     lateinit var adapter: CommunityPostAdapter
-
+    private var currentUser: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        currentUser = FirebaseAuth.getInstance().currentUser?.uid!!
 
         binding = ActivityFullPostBinding.inflate(layoutInflater)
         postId = intent.getStringExtra("postId")!!
@@ -71,12 +74,12 @@ class FullPost : AppCompatActivity() {
                 binding.heart.setImageResource(R.drawable.like_outline)
                 postModel.likes.remove(FirebaseAuth.getInstance().currentUser?.uid!!)
                 binding.likeCount.text = "${postModel.likes.size}"
-                updateUserUnLiked()
+                updateUserLikedUnliked(false)
             } else {
                 postModel.likes.add(FirebaseAuth.getInstance().currentUser?.uid!!)
                 binding.heart.setImageResource(R.drawable.like_filled_red)
                 binding.likeCount.text = "${postModel.likes.size}"
-                updateUserLiked()
+                updateUserLikedUnliked(true)
             }
 
             binding.heart.startAnimation(zoomInAnim)
@@ -86,9 +89,11 @@ class FullPost : AppCompatActivity() {
         binding.star.setOnClickListener {
             if (isStarred) {
                 binding.star.setImageResource(R.drawable.star_outline)
+                updateUserStarredState(false)
 
             } else {
                 binding.star.setImageResource(R.drawable.gold_star)
+                updateUserStarredState(true)
 
             }
             binding.star.startAnimation(zoomInAnim)
@@ -112,6 +117,33 @@ class FullPost : AppCompatActivity() {
         }
 
 
+    }
+
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.context_menu, menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.delete -> {
+                Firebase.firestore.collection("community")
+                    .document(postId)
+                    .delete()
+                    .addOnSuccessListener {
+                        finish()
+                        UiUtils.showToast(this, "Post Deleted")
+                    }
+                true
+            }
+
+            else -> super.onContextItemSelected(item)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -158,6 +190,10 @@ class FullPost : AppCompatActivity() {
                 postModel = it?.toObject(CommuinityModel::class.java)!!
                 setUi()
                 retrievePosts()
+                if (postModel.uploaderId == currentUser) {
+                    registerForContextMenu(binding.postBody)
+                }
+
             }
     }
 
@@ -187,6 +223,21 @@ class FullPost : AppCompatActivity() {
 
                     binding.likeCount.text = "${postModel.likes.size}"
                     binding.commentCount.text = "${postModel.comments.size}"
+                }
+
+            }
+
+        //checked if already starred
+        Firebase.firestore.collection("users")
+            .document(currentUser)
+            .get()
+            .addOnSuccessListener {
+                val currentUserModel = it?.toObject(UserModel::class.java)
+                currentUserModel?.apply {
+                    if (currentUserModel.starred.contains(postModel.postId)) {
+                        binding.star.setImageResource(R.drawable.gold_star)
+                        isStarred = true
+                    }
                 }
 
             }
@@ -227,13 +278,20 @@ class FullPost : AppCompatActivity() {
             }
     }
 
-    fun updateUserUnLiked() {
+
+    private fun updateUserLikedUnliked(like: Boolean) {
         Firebase.firestore.collection("users")
-            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+            .document(currentUser)
             .get()
             .addOnSuccessListener {
                 val currentUserModel = it.toObject(UserModel::class.java)!!
-                currentUserModel.liked.remove(postModel.postId)
+                if (like) {
+                    currentUserModel.liked.add(postModel.postId)
+                } else {
+                    currentUserModel.liked.remove(postModel.postId)
+                }
+
+
                 Firebase.firestore.collection("users")
                     .document(FirebaseAuth.getInstance().currentUser?.uid!!)
                     .set(currentUserModel)
@@ -241,17 +299,24 @@ class FullPost : AppCompatActivity() {
 
     }
 
-    fun updateUserLiked() {
+    private fun updateUserStarredState(starred: Boolean) {
         Firebase.firestore.collection("users")
-            .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+            .document(currentUser)
             .get()
             .addOnSuccessListener {
                 val currentUserModel = it.toObject(UserModel::class.java)!!
-                currentUserModel.liked.add(postModel.postId)
+
+                if (starred) {
+                    currentUserModel.starred.add(postModel.postId)
+                } else {
+                    currentUserModel.starred.remove(postModel.postId)
+                }
+
                 Firebase.firestore.collection("users")
                     .document(FirebaseAuth.getInstance().currentUser?.uid!!)
                     .set(currentUserModel)
             }
-
     }
+
+
 }

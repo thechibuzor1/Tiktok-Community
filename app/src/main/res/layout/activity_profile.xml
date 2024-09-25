@@ -8,6 +8,7 @@
     android:orientation="vertical"
     tools:context=".ProfileActivity">
 
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
@@ -15,6 +16,9 @@
         android:elevation="4dp"
         android:textAlignment="center"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
         <TextView
@@ -27,146 +31,163 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-
-            <ImageView
-                android:id="@+id/profile_pic"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/icon_account_circle" />
-
-            <ImageView
-                android:id="@+id/edit_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_centerInParent="true"
-                android:src="@drawable/edit_icon"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/material_dynamic_secondary80"
-            android:indeterminateTintMode="src_atop" />
-
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:text="username" />
-
-        <Button
-            android:id="@+id/profile_btn_act"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="Logout" />
-
-
-        <TextView
-            android:id="@+id/bio_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxWidth="200dp"
-            android:text="this is a very cool bio. omg. hi. lorem shit rn fr. lol "
-            android:textStyle="bold" />
-
+        android:fillViewport="true">
 
         <LinearLayout
-            android:id="@+id/following_block"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                android:gravity="center"
-                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/profile_pic"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:src="@drawable/icon_account_circle" />
+
+                    <ImageView
+                        android:id="@+id/edit_icon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/edit_icon"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/material_dynamic_secondary80"
+                    android:indeterminateTintMode="src_atop" />
 
                 <TextView
-                    android:id="@+id/following_count"
+                    android:id="@+id/profile_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="username" />
+
+                <Button
+                    android:id="@+id/profile_btn_act"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    tools:text="Logout" />
+
 
                 <TextView
+                    android:id="@+id/bio_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Following"
+                    android:gravity="center"
+                    android:maxWidth="200dp"
                     android:textStyle="bold" />
+
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/following_block"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/follower_count"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
 
-                <TextView
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/following_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Following"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Follower"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="30dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/follower_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Follower"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+
             </LinearLayout>
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/profile_tab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_collapseMode="pin"
+                app:layout_constraintTop_toBottomOf="@+id/header"
+                app:tabIndicatorAnimationMode="elastic"
+                app:tabIndicatorGravity="bottom"
+                app:tabMode="fixed" />
 
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/profile_view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="650dp"
+                android:isScrollContainer="false"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@+id/profile_tab" />
         </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/profile_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:tabIndicatorAnimationMode="elastic"
-            app:tabIndicatorGravity="bottom"
-            app:tabMode="fixed" />
-
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/profile_view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-
-    </LinearLayout>
 
 </LinearLayout>
