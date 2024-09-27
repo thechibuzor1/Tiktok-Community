@@ -1,5 +1,6 @@
 package com.downbadbuzor.tiktok
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -56,6 +57,16 @@ class ProfileActivity : AppCompatActivity() {
             insets
         }
 
+        if (profileUserId == currentUserId) {
+            binding.editBio.visibility = View.VISIBLE
+            val editBio = EditBioModal()
+            binding.editBio.setOnClickListener {
+                editBio.show(supportFragmentManager, editBio.tag)
+            }
+        } else {
+            binding.editBio.visibility = View.GONE
+        }
+
 
         //CUrrent user profile
         binding.profileBtnAct.setOnClickListener {
@@ -75,6 +86,14 @@ class ProfileActivity : AppCompatActivity() {
         binding.profilePic.setOnClickListener {
             if (profileUserId == currentUserId) {
                 checkPermissionAndPickPhoto()
+            } else {
+                val intent = Intent(
+                    this,
+                    FullScreenImage::class.java
+                )
+                intent.putExtra("image_url", profileUserModel.profilePic!!)
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+
             }
         }
 
