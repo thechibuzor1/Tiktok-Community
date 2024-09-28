@@ -2,13 +2,10 @@ package com.downbadbuzor.tiktok.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.downbadbuzor.tiktok.Community
 import com.downbadbuzor.tiktok.Home
-import com.downbadbuzor.tiktok.Profile
-import com.downbadbuzor.tiktok.Upload
+import com.downbadbuzor.tiktok.Search
 
 class FragmentAdapter(fragmentActivity: FragmentActivity) :
     FragmentStateAdapter(fragmentActivity) {
@@ -17,7 +14,7 @@ class FragmentAdapter(fragmentActivity: FragmentActivity) :
         return when (position) {
             0 -> Community()
             1 -> Home()
-            2  -> Profile()
+            2 -> Search()
             else -> throw IllegalStateException("Invalid tab position")
         }
     }
