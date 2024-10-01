@@ -5,12 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
+import com.downbadbuzor.tiktok.adapter.SearchAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentSearchBinding
+import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -32,6 +37,8 @@ class Search : Fragment() {
     private var param2: String? = null
 
     lateinit var binding: FragmentSearchBinding
+    lateinit var adapter: SearchAdapter
+    lateinit var postsAdapter: CommunityPostAdapter
 
     lateinit var profileUserId: String
     lateinit var profileUserModel: UserModel
@@ -51,6 +58,9 @@ class Search : Fragment() {
     ): View {
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         profileUserId = FirebaseAuth.getInstance().currentUser?.uid!!
+        adapter = SearchAdapter()
+        postsAdapter = CommunityPostAdapter(requireActivity())
+
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -67,8 +77,89 @@ class Search : Fragment() {
             intent.putExtra("profile_user_id", profileUserId)
             binding.profilePic.context.startActivity(intent)
         }
+
+
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle search query submission (optional)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Perform search as the user types
+                performSearch(newText)
+                return true
+            }
+        })
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+
+    private fun performSearch(query: String?) {
+        if (query.isNullOrEmpty()) {
+            // If query is empty, show all documents or clear the results
+            // ...
+            adapter.clearUsers()
+            postsAdapter.clearPosts()
+            return
+        }
+
+        val searchQuery = Firebase.firestore.collection("users")
+            .whereGreaterThanOrEqualTo(
+                "username",
+                query
+            ) // Replace "search_field" with your field
+            .whereLessThanOrEqualTo("username", query + "\uf8ff") // For case-insensitive search
+
+        searchQuery.get()
+            .addOnSuccessListener { item ->
+                val users = mutableListOf<UserModel>()
+                for (document in item.documents) {
+                    val user = document.toObject(UserModel::class.java)
+                    user?.let {
+                        users.add(it)
+                    }
+                }
+                // Now you have a list of userIds in the 'userIds' variable
+                adapter.clearUsers()
+                adapter.addUsers(users)
+                binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerView.adapter = adapter
+
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                // ...
+            }
+        //show related posts
+        val searchForPost = Firebase.firestore.collection("community")
+            .whereGreaterThanOrEqualTo(
+                "content",
+                query
+            ) // Replace "search_field" with your field
+            .whereLessThanOrEqualTo("content", query + "\uf8ff") // For case-insensitive search
+
+        searchForPost.get()
+            .addOnSuccessListener { item ->
+                val posts = mutableListOf<CommuinityModel>()
+                for (document in item.documents) {
+                    val post = document.toObject(CommuinityModel::class.java)
+                    post?.let {
+                        posts.add(it)
+                    }
+                }
+                // Now you have a list of userIds in the 'userIds' variable
+                postsAdapter.clearPosts()
+                postsAdapter.addPost(posts)
+                binding.recyclerView2.layoutManager = LinearLayoutManager(requireContext())
+                binding.recyclerView2.adapter = postsAdapter
+
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                // ...
+            }
     }
 
     private fun getProfileDataFromFirebase() {

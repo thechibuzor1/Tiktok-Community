@@ -1,13 +1,12 @@
 package com.downbadbuzor.tiktok
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.downbadbuzor.tiktok.adapter.FollowerFollowingAdapter
-import com.downbadbuzor.tiktok.adapter.FollowerFollowingListAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentFollowingListBinding
 import com.downbadbuzor.tiktok.model.UserModel
 import com.google.firebase.Firebase
@@ -25,8 +24,8 @@ private const val ARG_PARAM1 = "param1"
 class FollowingList : Fragment() {
     // TODO: Rename and change types of parameters
 
-    lateinit var binding : FragmentFollowingListBinding
-    lateinit var adapter : FollowerFollowingAdapter
+    lateinit var binding: FragmentFollowingListBinding
+    lateinit var adapter: FollowerFollowingAdapter
 
     private var param1: String? = null
 
@@ -44,14 +43,14 @@ class FollowingList : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentFollowingListBinding.inflate(layoutInflater, container, false)
 
-        adapter = FollowerFollowingAdapter(requireActivity())
+        adapter = FollowerFollowingAdapter()
 
 
         setUpRecyclerView()
         return binding.root
     }
 
-    fun setUpRecyclerView(){
+    fun setUpRecyclerView() {
         Firebase.firestore.collection("users")
             .document(param1!!)
             .get()
@@ -63,7 +62,6 @@ class FollowingList : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
-
 
 
     companion object {

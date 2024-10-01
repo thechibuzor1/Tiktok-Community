@@ -6,15 +6,10 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
-import com.downbadbuzor.tiktok.adapter.FollowerFollowingAdapter
 import com.downbadbuzor.tiktok.adapter.FollowerFollowingListAdapter
-import com.downbadbuzor.tiktok.adapter.HomeTabAdapter
 import com.downbadbuzor.tiktok.databinding.ActivityFollowingListBinding
 import com.downbadbuzor.tiktok.model.UserModel
-import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.firebase.Firebase
@@ -22,12 +17,11 @@ import com.google.firebase.firestore.firestore
 
 class FollowingListActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivityFollowingListBinding
-    lateinit var profileUserId : String
-    lateinit var tabLayout : TabLayout
-    lateinit var viewPager : ViewPager2
-    lateinit var tabAdapter : FollowerFollowingListAdapter
-
+    lateinit var binding: ActivityFollowingListBinding
+    lateinit var profileUserId: String
+    lateinit var tabLayout: TabLayout
+    lateinit var viewPager: ViewPager2
+    lateinit var tabAdapter: FollowerFollowingListAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +69,7 @@ class FollowingListActivity : AppCompatActivity() {
 
 
     }
+
     fun setUserUi() {
         Firebase.firestore.collection("users")
             .document(profileUserId)
@@ -93,6 +88,7 @@ class FollowingListActivity : AppCompatActivity() {
                 finish()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -1,6 +1,5 @@
 package com.downbadbuzor.tiktok.adapter
 
-import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +15,15 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 
-class FollowerFollowingAdapter(private val activity: Activity) :
-        RecyclerView.Adapter<FollowerFollowingAdapter.UserViewHolder>() {
+class FollowerFollowingAdapter :
+    RecyclerView.Adapter<FollowerFollowingAdapter.UserViewHolder>() {
 
     private val users = mutableListOf<String>()
     fun addUsers(newUsers: List<String>) {
         users.addAll(newUsers)
         notifyDataSetChanged()
     }
+
     fun clearUsers() {
         users.clear()
         notifyDataSetChanged()
@@ -31,7 +31,7 @@ class FollowerFollowingAdapter(private val activity: Activity) :
 
 
     inner class UserViewHolder(private val binding: FollowingblocksBinding) :
-            RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(user: String) {
             if (user == FirebaseAuth.getInstance().currentUser?.uid) {
                 binding.followUnfollowBtn.visibility = View.INVISIBLE
@@ -96,9 +96,6 @@ class FollowerFollowingAdapter(private val activity: Activity) :
                     }
 
 
-
-
-
                 }
         }
 
@@ -131,7 +128,8 @@ class FollowerFollowingAdapter(private val activity: Activity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val binding = FollowingblocksBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            FollowingblocksBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)
     }
 
@@ -140,7 +138,6 @@ class FollowerFollowingAdapter(private val activity: Activity) :
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         holder.bind(users[position])
     }
-
 
 
 }
