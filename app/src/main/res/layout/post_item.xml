@@ -97,7 +97,7 @@
 
                 <ImageView
                     android:id="@+id/heart"
-                    android:layout_width="20dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:src="@drawable/like_outline" />
 

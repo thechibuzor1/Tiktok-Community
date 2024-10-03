@@ -156,7 +156,7 @@ class CommunityPostAdapter(
                     binding.likeCount.text = "${postModel.likes.size}"
 
                     Firebase.firestore.collection("users")
-                        .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                        .document(currentUser)
                         .get()
                         .addOnSuccessListener {
                             val currentUserModel = it.toObject(UserModel::class.java)!!
@@ -178,7 +178,7 @@ class CommunityPostAdapter(
                             val currentUserModel = it.toObject(UserModel::class.java)!!
                             currentUserModel.liked.add(postModel.postId)
                             Firebase.firestore.collection("users")
-                                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                                .document(currentUser)
                                 .set(currentUserModel)
                         }
                 }
@@ -233,7 +233,7 @@ class CommunityPostAdapter(
 
         }
 
-        fun updatePostData(model: CommuinityModel) {
+        private fun updatePostData(model: CommuinityModel) {
             Firebase.firestore.collection("community")
                 .document(model.postId)
                 .set(model)

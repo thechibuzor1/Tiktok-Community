@@ -4,13 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
+import com.downbadbuzor.tiktok.adapter.ProfileVideoAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentProfileStarredBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.model.UserModel
+import com.downbadbuzor.tiktok.model.VideoModel
 import com.downbadbuzor.tiktok.utils.UiUtils
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
@@ -26,6 +32,13 @@ class ProfileStarredFragment : Fragment() {
 
     lateinit var binding: FragmentProfileStarredBinding
     lateinit var adapter: CommunityPostAdapter
+    lateinit var tiktoksAdapter: ProfileVideoAdapter
+
+    private val options = arrayOf("Tiktoks", "Community")
+    private val autoCompleteTextView: AutoCompleteTextView by lazy {
+        binding.autoCompleteTextView
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,22 +54,40 @@ class ProfileStarredFragment : Fragment() {
     ): View {
         binding = FragmentProfileStarredBinding.inflate(layoutInflater, container, false)
 
-        adapter = CommunityPostAdapter(requireActivity())
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = adapter
 
-        binding.swipeRefresh.setOnRefreshListener {
-            UiUtils.showToast(requireContext(), "Refreshing")
-            retrieveStarred()
-            binding.swipeRefresh.isRefreshing = false
-        }
+
+
         if (currentUserId == FirebaseAuth.getInstance().currentUser?.uid!!) {
             binding.emptyLayout.visibility = View.GONE
             binding.swipeRefresh.visibility = View.VISIBLE
             retrieveStarred()
+            binding.swipeRefresh.setOnRefreshListener {
+                UiUtils.showToast(requireContext(), "Refreshing")
+                retrieveStarred()
+                binding.swipeRefresh.isRefreshing = false
+            }
+
+            autoCompleteTextView.setAdapter(
+                ArrayAdapter( // Specify the type as <String>
+                    requireContext(),
+                    R.layout.view_liked_options,
+                    options
+                )
+            )
+
+            autoCompleteTextView.setOnItemClickListener { adapterView, view, i, l ->
+                val itemSelected = adapterView.getItemAtPosition(i)
+                if (itemSelected.toString() == "Tiktoks") {
+                    retrieveStarredTiktoks()
+                }
+                if (itemSelected.toString() == "Community") {
+                    retrieveStarred()
+                }
+            }
         } else {
             binding.emptyLayout.visibility = View.VISIBLE
             binding.swipeRefresh.visibility = View.GONE
+            binding.dropdownMenu.visibility = View.GONE
         }
 
 
@@ -66,10 +97,14 @@ class ProfileStarredFragment : Fragment() {
 
 
     private fun retrieveStarred() {
+        adapter = CommunityPostAdapter(requireActivity())
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
+
+        binding.emptyLayout.visibility = View.GONE
+        binding.swipeRefresh.visibility = View.VISIBLE
+
         val starredPosts = mutableListOf<CommuinityModel>()
-
-
-
         Firebase.firestore.collection("users")
             .document(currentUserId!!)
             .get()
@@ -94,6 +129,46 @@ class ProfileStarredFragment : Fragment() {
                             }
                         }
                 }
+            }
+    }
+
+    private fun retrieveStarredTiktoks() {
+        binding.emptyLayout.visibility = View.GONE
+        binding.swipeRefresh.visibility = View.VISIBLE
+
+        Firebase.firestore.collection("users")
+            .document(currentUserId!!)
+            .get()
+            .addOnSuccessListener { userDocument ->
+                val currentUserModel = userDocument.toObject(UserModel::class.java)!!
+                val starredVideoIds = currentUserModel.starredVideos
+
+                if (starredVideoIds.isEmpty()) {
+                    // Handle case where there are no liked videos
+                    // ... (e.g., show an empty state message)
+
+                    binding.emptyLayout.visibility = View.VISIBLE
+                    binding.emptyText.text = "You haven't starred any tiktoks \uD83E\uDD7A "
+                    binding.swipeRefresh.visibility = View.GONE
+
+                    return@addOnSuccessListener
+                }
+
+                val query = Firebase.firestore.collection("videos")
+                    .whereIn("videoId", starredVideoIds)
+
+                val options = FirestoreRecyclerOptions.Builder<VideoModel>()
+                    .setQuery(query, VideoModel::class.java)
+                    .build()
+                tiktoksAdapter = ProfileVideoAdapter(options)
+                binding.recyclerView.layoutManager = GridLayoutManager(requireActivity(), 3)
+                binding.recyclerView.adapter = tiktoksAdapter
+
+                tiktoksAdapter.startListening()
+            }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                // ...
             }
     }
 

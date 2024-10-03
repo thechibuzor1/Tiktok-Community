@@ -65,6 +65,7 @@ class CommunityHome : Fragment() {
             .get()
             .addOnSuccessListener {
                 val posts = it.toObjects(CommuinityModel::class.java)
+                posts.sortByDescending { it -> it.createdTime }
                 adapter.clearPosts()
                 adapter.addPost(posts)
             }
