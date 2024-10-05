@@ -155,6 +155,10 @@ class BottomSheetFragment(private val postId: String) : BottomSheetDialogFragmen
                 binding.postImagePreview.visibility = View.GONE
                 selectedPhotoUri = null
                 dismissAllowingStateLoss()
+                UiUtils.showToast(
+                    requireContext(),
+                    "Posted!"
+                )
             }
             .addOnFailureListener {
                 setInProgress(false)

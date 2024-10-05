@@ -56,8 +56,8 @@
 
             <ImageView
                 android:id="@+id/heart"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/vid_like_outline" />
 
             <TextView
@@ -66,12 +66,12 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="@color/white"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/community_container"
+            android:id="@+id/comment_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -80,8 +80,8 @@
 
             <ImageView
                 android:id="@+id/comment"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/vid_comment_outline" />
 
             <TextView
@@ -90,13 +90,13 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="@color/white"
-                android:textSize="22sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/star"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_gravity="center"
             android:layout_marginTop="4dp"
             android:src="@drawable/vid_star_outline" />
@@ -133,7 +133,7 @@
                     android:layout_gravity="center"
                     android:text="username"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <TextView

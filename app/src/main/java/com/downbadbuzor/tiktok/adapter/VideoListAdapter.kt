@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.downbadbuzor.tiktok.CommentModal
 import com.downbadbuzor.tiktok.ProfileActivity
 import com.downbadbuzor.tiktok.R
 import com.downbadbuzor.tiktok.databinding.VideoItemRowBinding
@@ -50,6 +51,7 @@ class VideoListAdapter(private val activity: FragmentActivity) :
         private var currentUser = FirebaseAuth.getInstance().currentUser?.uid!!
         private val zoomInAnim = AnimationUtils.loadAnimation(activity, R.anim.zoom_in)
 
+
         fun bindVideo(videoModel: VideoModel) {
 
             //bind user data
@@ -70,7 +72,7 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                             )
                             .into(binding.profileIcon)
 
-                        binding.userDetailsLayout.setOnClickListener {
+                        binding.usernameView.setOnClickListener {
                             val intent = Intent(
                                 binding.userDetailsLayout.context,
                                 ProfileActivity::class.java
@@ -79,6 +81,17 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                             binding.userDetailsLayout.context.startActivity(intent)
 
                         }
+
+                        binding.profileIcon.setOnClickListener {
+                            val intent = Intent(
+                                binding.userDetailsLayout.context,
+                                ProfileActivity::class.java
+                            )
+                            intent.putExtra("profile_user_id", id)
+                            binding.userDetailsLayout.context.startActivity(intent)
+
+                        }
+
 
 
                         if (videoModel.likes.contains(currentUser)) {
@@ -103,6 +116,13 @@ class VideoListAdapter(private val activity: FragmentActivity) :
                     }
 
                 }
+
+            //bind the comments modal
+            binding.commentContainer.setOnClickListener {
+                val commentModal = CommentModal(videoModel.videoId)
+                commentModal.show(activity.supportFragmentManager, commentModal.tag)
+            }
+
 
             binding.captionView.text = videoModel.title
             binding.progressBar.visibility = View.VISIBLE
