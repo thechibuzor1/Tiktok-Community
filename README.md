@@ -23,7 +23,12 @@ Here's a sample GitHub README for your "TikTok Community" Kotlin app:
 - **Build Tools**: Gradle
 
 ## Screenshots
-*Insert screenshots of your app in action*
+![My Image](1.jpg)
+![My Image](2.jpg)
+![My Image](3.jpg)
+![My Image](4.jpg)
+![My Image](5.jpg)
+![My Image](6.jpg)
 
 ## Installation
 
