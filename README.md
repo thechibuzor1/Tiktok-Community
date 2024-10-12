@@ -1,7 +1,3 @@
-Here's a sample GitHub README for your "TikTok Community" Kotlin app:
-
----
-
 # TikTok Community
 
 **TikTok Community** is a social media application combining features from both Twitter and TikTok. Users can post short videos, interact through likes and comments, and follow other users in a dynamic feed. The app is built using **Kotlin** with a **Firebase** backend and a **Material UI** frontend for a smooth and responsive user experience.
@@ -65,7 +61,7 @@ Here's a sample GitHub README for your "TikTok Community" Kotlin app:
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/tiktok-community/issues) for open tasks.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/thechibuzor1/Tiktok-Community/issues) for open tasks.
 
 ## License
 
