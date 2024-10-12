@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.downbadbuzor.tiktok.DeleteModal
 import com.downbadbuzor.tiktok.FullPost
 import com.downbadbuzor.tiktok.FullScreenImage
 import com.downbadbuzor.tiktok.ProfileActivity
@@ -25,7 +27,8 @@ import java.util.Date
 import java.util.Locale
 
 class CommunityPostAdapter(
-    private val activity: Activity
+    private val activity: Activity,
+    private val supportFragmentManager: FragmentManager,
 ) :
     RecyclerView.Adapter<CommunityPostAdapter.PostViewHolder>() {
 
@@ -65,6 +68,18 @@ class CommunityPostAdapter(
                     userModel?.apply {
                         binding.username.text = username
                         //bind profile
+
+
+                        //delete modal
+                        if (userModel.id == currentUser) {
+                            binding.optionsMenu.visibility = View.VISIBLE
+                            binding.optionsMenu.setOnClickListener {
+                                val bottomSheet = DeleteModal("", postModel.postId, "community")
+                                bottomSheet.show(supportFragmentManager, "ModalBottomSheet")
+                            }
+                        }
+
+
                         Glide.with(binding.profileIcon).load(profilePic)
                             .circleCrop()
                             .apply(
@@ -220,7 +235,6 @@ class CommunityPostAdapter(
                 isStarred = !isStarred
             }
 
-
             binding.postBody.setOnClickListener {
                 val intent = Intent(
                     activity,
@@ -249,10 +263,12 @@ class CommunityPostAdapter(
         return PostViewHolder(binding)
     }
 
+
     override fun getItemCount(): Int = posts.size
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bindPost(posts[position])
+
     }
 }
 

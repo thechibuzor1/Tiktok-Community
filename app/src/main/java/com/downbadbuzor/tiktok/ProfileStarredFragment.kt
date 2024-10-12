@@ -97,7 +97,7 @@ class ProfileStarredFragment : Fragment() {
 
 
     private fun retrieveStarred() {
-        adapter = CommunityPostAdapter(requireActivity())
+        adapter = CommunityPostAdapter(requireActivity(), childFragmentManager)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 

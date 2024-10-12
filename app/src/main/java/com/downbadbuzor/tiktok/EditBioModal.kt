@@ -62,7 +62,7 @@ class EditBioModal : BottomSheetDialogFragment() {
     }
 
     private fun saveToFireStore() {
-        val bio = binding.bioInput.text.toString()
+        val bio = binding.bioInput.text.toString().trim()
         Firebase.firestore.collection("users")
             .document(currentUser)
             .update("bio", bio)

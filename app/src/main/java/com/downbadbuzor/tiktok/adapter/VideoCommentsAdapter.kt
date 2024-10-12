@@ -5,9 +5,11 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.downbadbuzor.tiktok.DeleteModal
 import com.downbadbuzor.tiktok.ProfileActivity
 import com.downbadbuzor.tiktok.R
 import com.downbadbuzor.tiktok.databinding.VideoCommentBlockBinding
@@ -23,8 +25,10 @@ import java.util.Locale
 
 class VideoCommentsAdapter(
     private val activity: Activity,
+    private val supportFragmentManager: FragmentManager,
+    private val videoId: String
 
-    ) :
+) :
     RecyclerView.Adapter<VideoCommentsAdapter.CommentViewHolder>() {
     private val comments = mutableListOf<VideoCommentModel>()
 
@@ -138,6 +142,13 @@ class VideoCommentsAdapter(
             }
     }
 
+    private fun showBottomSheet(commentModel: VideoCommentModel) {
+        if (commentModel.uploaderId == FirebaseAuth.getInstance().currentUser?.uid!!) {
+            val bottomSheet = DeleteModal(commentModel.commentId, videoId, "VideoComment")
+            bottomSheet.show(supportFragmentManager, "ModalBottomSheet")
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding =
             VideoCommentBlockBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -148,6 +159,13 @@ class VideoCommentsAdapter(
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         holder.bindPost(comments[position])
+
+        holder.itemView.setOnLongClickListener {
+
+            showBottomSheet(comments[position])
+
+            true
+        }
 
 
     }

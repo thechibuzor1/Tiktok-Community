@@ -44,7 +44,7 @@ class CommunityHome : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCommunityHomeBinding.inflate(layoutInflater, container, false)
-        adapter = CommunityPostAdapter(requireActivity())
+        adapter = CommunityPostAdapter(requireActivity(), childFragmentManager)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter

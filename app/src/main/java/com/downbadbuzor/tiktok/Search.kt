@@ -59,7 +59,7 @@ class Search : Fragment() {
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         profileUserId = FirebaseAuth.getInstance().currentUser?.uid!!
         adapter = SearchAdapter()
-        postsAdapter = CommunityPostAdapter(requireActivity())
+        postsAdapter = CommunityPostAdapter(requireActivity(), childFragmentManager)
 
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->

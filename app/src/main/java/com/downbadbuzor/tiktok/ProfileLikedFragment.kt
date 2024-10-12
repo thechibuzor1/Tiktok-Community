@@ -92,7 +92,7 @@ class ProfileLikedFragment : Fragment() {
 
 
         val likedPosts = mutableListOf<CommuinityModel>()
-        adapter = CommunityPostAdapter(requireActivity())
+        adapter = CommunityPostAdapter(requireActivity(), childFragmentManager)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 

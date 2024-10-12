@@ -105,7 +105,7 @@ class FullPost : AppCompatActivity() {
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
         }
 
-        adapter = CommunityPostAdapter(this)
+        adapter = CommunityPostAdapter(this, supportFragmentManager)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter

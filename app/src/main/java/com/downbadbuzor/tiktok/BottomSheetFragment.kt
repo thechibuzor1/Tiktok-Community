@@ -120,7 +120,7 @@ class BottomSheetFragment(private val postId: String) : BottomSheetDialogFragmen
         val postModel = CommuinityModel(
             currentUser + "_" + Timestamp.now().toString(),
             url,
-            binding.postCaptionInput.text.toString(),
+            binding.postCaptionInput.text.toString().trim(),
             currentUser,
             Timestamp.now(),
             mutableListOf(),

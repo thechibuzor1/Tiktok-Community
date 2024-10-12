@@ -58,7 +58,7 @@ class CommentModal(
     private fun postToFireStore(comment: String) {
         val commentModel = VideoCommentModel(
             currentUser + "_" + Timestamp.now().toString(),
-            comment,
+            comment.trim(),
             currentUser,
             Timestamp.now(),
             mutableListOf()
@@ -94,7 +94,7 @@ class CommentModal(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         currentUser = FirebaseAuth.getInstance().currentUser?.uid!!
-        adapter = VideoCommentsAdapter(requireActivity())
+        adapter = VideoCommentsAdapter(requireActivity(), childFragmentManager, videoId)
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
@@ -130,6 +130,7 @@ class CommentModal(
                             }
                             completedQueries++
                             if (completedQueries == totalQueries) {
+                                comments.sortByDescending { it.createdTime }
                                 adapter.clearComments()
                                 adapter.addComments(comments)
                             }
