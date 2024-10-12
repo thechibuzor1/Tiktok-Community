@@ -23,14 +23,31 @@ Here's a sample GitHub README for your "TikTok Community" Kotlin app:
 - **Build Tools**: Gradle
 
 ## Screenshots
-<img src="./1.jpg" height=200 width=120/>
+<p float="left">
+<img src="./1.jpg" height=400 />
+<img src="./2.jpg" height=400 />
+<img src="./3.jpg" height=400 />
+<img src="./4.jpg" height=400 />
+<img src="./5.jpg" height=400 />
+<img src="./6.jpg" height=400 />
+<img src="./7.jpg" height=400 />
+<img src="./8.jpg" height=400 />
+<img src="./9.jpg" height=400 />
+<img src="./10.jpg" height=400 />
+</p>
 
-
+## Material UI dynamic theming based on the device colors
+<p float="left">
+<img src="./11.jpg" height=400 />
+<img src="./12.jpg" height=400 />
+<img src="./13.jpg" height=400 />
+<img src="./14.jpg" height=400 />
+</p>
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/tiktok-community.git
+   git clone https://github.com/thechibuzor1/Tiktok-Community.git
    ```
 
 2. Open the project in **Android Studio**.
