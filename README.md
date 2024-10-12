@@ -38,6 +38,7 @@ Here's a sample GitHub README for your "TikTok Community" Kotlin app:
 
 ## Material UI dynamic theming based on the device colors
 <p float="left">
+<img src="./2.jpg" height=500 />
 <img src="./11.jpg" height=500 />
 <img src="./12.jpg" height=500 />
 <img src="./13.jpg" height=500 />
