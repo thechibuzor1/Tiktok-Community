@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.downbadbuzor.tiktok.adapter.CommunityPostAdapter
 import com.downbadbuzor.tiktok.databinding.FragmentCommunityHomeBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.utils.UiUtils
+import com.google.android.material.card.MaterialCardView
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
@@ -54,7 +57,35 @@ class CommunityHome : Fragment() {
             retrievePosts()
             binding.swipeRefresh.isRefreshing = false
         }
-        // Inflate the layout for this fragment
+        val icon = requireActivity().findViewById<MaterialCardView>(R.id.post_icon_main)
+        val slideUp = AnimationUtils.loadAnimation(requireContext(), R.anim.icon_up)
+        val slideDown = AnimationUtils.loadAnimation(requireContext(), R.anim.icon_down)
+
+        var isIconVisible = true // Flag to track icon visibility
+
+        binding.recyclerView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (scrollY > oldScrollY && isIconVisible) {
+                // Scrolling down and icon is visible
+                isIconVisible = false
+                icon.startAnimation(slideUp)
+                slideUp.setAnimationListener(object : Animation.AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {}
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        icon.visibility = View.GONE
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation?) {}
+                })
+            } else if (scrollY < oldScrollY && !isIconVisible) {
+                // Scrolling up and icon is hidden
+                isIconVisible = true
+                icon.visibility = View.VISIBLE
+                icon.startAnimation(slideDown)
+            }
+        }
+
+
         retrievePosts()
         return binding.root
     }

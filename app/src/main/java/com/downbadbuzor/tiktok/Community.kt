@@ -67,7 +67,7 @@ class Community : Fragment() {
 
 
         val bottomSheetFragment = BottomSheetFragment("")
-        binding.postIcon.setOnClickListener {
+        binding.postIconMain.setOnClickListener {
             bottomSheetFragment.show(parentFragmentManager, bottomSheetFragment.tag)
         }
 
