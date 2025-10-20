@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,10 +33,11 @@ import com.google.firebase.storage.FirebaseStorage
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
-    lateinit var profileUserId: String
-    lateinit var currentUserId: String
+    // Use nullable types or lateinit with checks
+    private var profileUserId: String? = null
+    private var currentUserId: String? = null
 
-    lateinit var profileUserModel: UserModel
+    private var profileUserModel: UserModel? = null
     lateinit var photoLauncher: ActivityResultLauncher<Intent>
 
 
@@ -49,13 +51,22 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        profileUserId = intent.getStringExtra("profile_user_id")!!
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid!!
+        // Safely get user IDs
+        profileUserId = intent.getStringExtra("profile_user_id")
+        currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Proceed only if profileUserId is not null
+        if (profileUserId == null || currentUserId == null) {
+            Toast.makeText(this, "Error: User not found.", Toast.LENGTH_LONG).show()
+            finish() // Exit activity if essential data is missing
+            return
+        }
+
 
         if (profileUserId == currentUserId) {
             binding.editBio.visibility = View.VISIBLE
@@ -68,7 +79,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
 
-        //CUrrent user profile
+        //Current user profile
         binding.profileBtnAct.setOnClickListener {
             if (profileUserId == currentUserId) {
                 logout()
@@ -80,20 +91,23 @@ class ProfileActivity : AppCompatActivity() {
         photoLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
-                    uploadToFireStore(result.data?.data!!)
+                    result.data?.data?.let { uri ->
+                        uploadToFireStore(uri)
+                    }
                 }
             }
         binding.profilePic.setOnClickListener {
             if (profileUserId == currentUserId) {
                 checkPermissionAndPickPhoto()
             } else {
-                val intent = Intent(
-                    this,
-                    FullScreenImage::class.java
-                )
-                intent.putExtra("image_url", profileUserModel.profilePic!!)
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
-
+                profileUserModel?.profilePic?.let { imageUrl ->
+                    val intent = Intent(
+                        this,
+                        FullScreenImage::class.java
+                    )
+                    intent.putExtra("image_url", imageUrl)
+                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
+                }
             }
         }
 
@@ -113,7 +127,7 @@ class ProfileActivity : AppCompatActivity() {
 
         tabLayout = binding.profileTab
         viewPager = binding.profileViewPager
-        tabAdapter = ProfileFragsAdapter(supportFragmentManager, lifecycle, profileUserId)
+        tabAdapter = ProfileFragsAdapter(supportFragmentManager, lifecycle, profileUserId!!) // Safe now due to the check above
 
         tabLayout.addTab(tabLayout.newTab().setText("Posts"))
         tabLayout.addTab(tabLayout.newTab().setText("Tiktoks"))
@@ -124,7 +138,9 @@ class ProfileActivity : AppCompatActivity() {
 
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewPager.currentItem = tab!!.position
+                tab?.let {
+                    viewPager.currentItem = it.position
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -147,32 +163,35 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    fun followUnfollow() {
+    private fun followUnfollow() {
+        // Ensure critical data is not null before proceeding
+        val currentUid = currentUserId ?: return
+        val profileUid = profileUserId ?: return
+        val pUserModel = profileUserModel ?: return
+
         Firebase.firestore.collection("users")
-            .document(currentUserId)
+            .document(currentUid)
             .get()
             .addOnSuccessListener {
-                val currentUserModel = it.toObject(UserModel::class.java)!!
+                val currentUserModel = it.toObject(UserModel::class.java) ?: return@addOnSuccessListener
 
-                if (profileUserModel.followerList.contains(currentUserId)) {
+                if (pUserModel.followerList.contains(currentUid)) {
                     //unfollow
-                    profileUserModel.followerList.remove(currentUserId)
-                    currentUserModel.followingList.remove(profileUserId)
+                    pUserModel.followerList.remove(currentUid)
+                    currentUserModel.followingList.remove(profileUid)
                     binding.profileBtnAct.text = "Follow"
                 } else {
                     //follow
-                    profileUserModel.followerList.add(currentUserId)
-                    currentUserModel.followingList.add(profileUserId)
+                    pUserModel.followerList.add(currentUid)
+                    currentUserModel.followingList.add(profileUid)
                     binding.profileBtnAct.text = "Unfollow"
                 }
-                updateUserData(profileUserModel)
+                updateUserData(pUserModel)
                 updateUserData(currentUserModel)
-
-
             }
     }
 
-    fun updateUserData(model: UserModel) {
+    private fun updateUserData(model: UserModel) {
         Firebase.firestore.collection("users")
             .document(model.id)
             .set(model)
@@ -181,19 +200,30 @@ class ProfileActivity : AppCompatActivity() {
             }
     }
 
-    fun getProfileDataFromFirebase() {
-        Firebase.firestore.collection("users")
-            .document(profileUserId)
-            .get()
-            .addOnSuccessListener {
-                profileUserModel = it.toObject(UserModel::class.java)!!
-                setUI()
-            }
-
+    private fun getProfileDataFromFirebase() {
+        profileUserId?.let { userId ->
+            Firebase.firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    // Safely convert to object
+                    profileUserModel = snapshot.toObject(UserModel::class.java)
+                    if (profileUserModel != null) {
+                        setUI()
+                    } else {
+                        Toast.makeText(this, "Profile data not found.", Toast.LENGTH_SHORT).show()
+                        binding.progressBar.visibility = View.GONE
+                    }
+                }
+                .addOnFailureListener {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(this, "Failed to load profile.", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
-    fun setUI() {
-        profileUserModel.apply {
+    private fun setUI() {
+        profileUserModel?.apply {
             Glide.with(binding.profilePic)
                 .load(profilePic)
                 .circleCrop()
@@ -202,12 +232,11 @@ class ProfileActivity : AppCompatActivity() {
                 )
                 .into(binding.profilePic)
 
-            binding.profileUsername.text = "@" + username
-            if (profileUserModel.followerList.contains(currentUserId)) {
+            binding.profileUsername.text = "@$username"
+            if (followerList.contains(currentUserId)) {
                 binding.profileBtnAct.text = "Unfollow"
             } else {
                 if (profileUserId == currentUserId) {
-                    //CUrrent user profile
                     binding.profileBtnAct.text = "Logout"
                     binding.editIcon.visibility = View.VISIBLE
                 } else {
@@ -217,11 +246,11 @@ class ProfileActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
             binding.followerCount.text = followerList.size.toString()
             binding.followingCount.text = followingList.size.toString()
-            binding.bioText.text = profileUserModel.bio
+            binding.bioText.text = bio
         }
     }
 
-    fun logout() {
+    private fun logout() {
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, AuthActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -240,10 +269,11 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun uploadToFireStore(photoUri: Uri) {
+    private fun uploadToFireStore(photoUri: Uri) {
         binding.progressBar.visibility = View.VISIBLE
+        val pUid = profileUserId ?: return
         val photoRef = FirebaseStorage.getInstance()
-            .reference.child("profilePic/" + profileUserId)
+            .reference.child("profilePic/$pUid")
         photoRef.putFile(photoUri)
             .addOnSuccessListener {
                 photoRef.downloadUrl.addOnSuccessListener { downloadUrl ->
@@ -252,17 +282,19 @@ class ProfileActivity : AppCompatActivity() {
             }
     }
 
-    fun postToFireStore(url: String) {
-        Firebase.firestore.collection("users")
-            .document(profileUserId)
-            .update("profilePic", url)
-            .addOnSuccessListener {
-                getProfileDataFromFirebase()
-            }
+    private fun postToFireStore(url: String) {
+        profileUserId?.let { userId ->
+            Firebase.firestore.collection("users")
+                .document(userId)
+                .update("profilePic", url)
+                .addOnSuccessListener {
+                    getProfileDataFromFirebase()
+                }
+        }
     }
 
 
-    fun checkPermissionAndPickPhoto() {
+    private fun checkPermissionAndPickPhoto() {
         val readExternalPhoto = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             android.Manifest.permission.READ_MEDIA_IMAGES
         } else {
@@ -281,8 +313,8 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    fun openPhotoPicker() {
-        var intent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
+    private fun openPhotoPicker() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         intent.type = "image/*"
         photoLauncher.launch(intent)
     }

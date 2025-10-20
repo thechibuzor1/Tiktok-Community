@@ -25,7 +25,6 @@
         app:tabIndicatorColor="@null"
         app:tabIndicatorFullWidth="true"
         app:tabMode="fixed"
-        app:tabSelectedTextAppearance="@style/tab_selected"
         app:tabSelectedTextColor="@color/material_dynamic_secondary80"
         app:tabTextAppearance="@style/tab_unselected"
         app:tabTextColor="@color/material_dynamic_tertiary40"

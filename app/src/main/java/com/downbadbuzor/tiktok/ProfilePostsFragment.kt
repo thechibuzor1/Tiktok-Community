@@ -11,6 +11,7 @@ import com.downbadbuzor.tiktok.databinding.FragmentProfilePostsBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.utils.UiUtils
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -70,6 +71,9 @@ class ProfilePostsFragment : Fragment() {
                 val posts = it.toObjects(CommuinityModel::class.java)
                 adapter.clearPosts()
                 adapter.addPost(posts)
+            }
+            .addOnFailureListener {
+                UiUtils.showToast(requireContext(), "Failed to load posts.")
             }
     }
 
