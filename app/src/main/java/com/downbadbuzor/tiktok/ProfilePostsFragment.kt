@@ -11,7 +11,6 @@ import com.downbadbuzor.tiktok.databinding.FragmentProfilePostsBinding
 import com.downbadbuzor.tiktok.model.CommuinityModel
 import com.downbadbuzor.tiktok.utils.UiUtils
 import com.google.firebase.Firebase
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -69,6 +68,7 @@ class ProfilePostsFragment : Fragment() {
             .get()
             .addOnSuccessListener {
                 val posts = it.toObjects(CommuinityModel::class.java)
+                posts.sortByDescending { it -> it.createdTime }
                 adapter.clearPosts()
                 adapter.addPost(posts)
             }
